@@ -1,21 +1,6 @@
-# Later
-* Plan colors - can wait until we're actually building
-
 # Plan v1 of the basic app
 
 The most basic version possible.
-
-## Next
-
-* Create Plan Reviewer to review plan
-
-## 2026-04-11
-
-* ~~Write README~~
-* ~~Plan Data Model / Airtable setup~~
-* ~~Plan home screen~~
-* ~~Plan log screen~~
-* ~~Create Plan Reviewer to review plan~~
 
 ### Data Model
 

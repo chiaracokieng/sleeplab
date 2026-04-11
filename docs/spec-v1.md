@@ -2,7 +2,7 @@
 
 The most basic version possible.
 
-### Data Model
+## Data Model
 
 **Nights Table**
 
@@ -20,7 +20,7 @@ One row per night:
 
 Baseline is the average of nights within the selected time window (7/30/365) where no tactics were selected.
 
-### Home Screen
+## Home Screen
 
 From top to bottom:
 1. **Last Night card** — date + Total Sleep, Deep Sleep, REM, Body Battery Change
@@ -33,7 +33,7 @@ Baseline is the average of nights within the selected time window (7/30/365) whe
 * No nights logged yet: prompt "Enter your last 7 nights to establish your baseline" with a button into the Log screen
 * Baseline card with no tactic-free nights in the selected window: show "Not enough baseline data in this window"
 
-### Log Screen
+## Log Screen
 Where you enter last night's data each morning.
 
 1. Total Sleep — h m inputs

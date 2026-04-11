@@ -35,7 +35,7 @@ Pre-loaded list ranked by scientific evidence, plus the ability to add my own:
 
 ### Tech
 * PWA (Progressive Web App) — works like an app on my iPhone without needing the App Store. 
-* Data stored in Google Sheets — no data loss if I switch phones or clear my browser
+* Data stored in Airtable — no data loss if I switch phones or clear my browser
 
 ### Out of scope for v1
 * Automatic Garmin sync

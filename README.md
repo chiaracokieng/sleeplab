@@ -20,10 +20,10 @@ Entered manually each morning from Garmin Connect:
 * Body Battery Change
 
 ### Screens
-1. **Home** — Last night's stats compared to my baseline (non-intervention nights), with a toggle for last 7 / 30 / 365 days.
+1. **Home** — Last night's stats compared to my baseline (non-tactics nights), with a toggle for last 7 / 30 / 365 days.
 2. **Log** — A form to enter last night's metrics and tag which interventions I tried.
 
-### Interventions
+### Tactics
 Pre-loaded list ranked by scientific evidence, plus the ability to add my own:
 * Consistent wake time
 * Caffeine cutoff
@@ -34,14 +34,13 @@ Pre-loaded list ranked by scientific evidence, plus the ability to add my own:
 * Mouth tape
 
 ### Tech
-* PWA (Progressive Web App) — works like an app on my iPhone without needing the App Store. 
-* Data stored in Airtable — no data loss if I switch phones or clear my browser
+* **PWA (Progressive Web App)** — works like an app on iPhone without needing the App Store. 
+* **Data stored in Airtable** — no data loss if switching phones or clearing the browser
 
 ### Out of scope for v1
 * Automatic Garmin sync
 * HRV (not available on Forerunner 245)
 * Dedicated insights screen
 * Quality of life correlation
-* No custom backend / server to maintain
-
-
+* CSV import
+* Custom backend / server

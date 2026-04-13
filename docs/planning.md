@@ -5,7 +5,8 @@
 
 ## Next
 
-* Create Plan Reviewer to review plan
+* Watch Claude Code Tutorial # 1 - Introduction & Setup https://www.youtube.com/playlist?list=WL
+* Watch Claude Code Tutorial # 2 - CLAUDE.md Files & /init https://www.youtube.com/playlist?list=WL
 
 ## 2026-04-11
 

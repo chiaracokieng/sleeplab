@@ -106,6 +106,20 @@
   line-height: 1.2;
 }
 
+.metric-delta {
+  font-size: 11px;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.delta-up {
+  color: #16a34a;
+}
+
+.delta-down {
+  color: #dc2626;
+}
+
 /* Toggle */
 
 .toggle-group {
@@ -281,6 +295,21 @@
 }
 
 /* Nights card */
+
+.nights-avg {
+  display: grid;
+  grid-template-columns: 56px repeat(4, 1fr);
+  gap: 4px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+}
+
+.avg-label {
+  font-weight: 600;
+  color: var(--text-h);
+}
 
 .nights-list {
   max-height: 320px;

@@ -25,41 +25,53 @@ function fmtDateShort(dateStr) {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-function fmtTactic(name) {
-  return name.slice(0, 3).toUpperCase()
-}
+function calcBaseline(nights, sampleSize) {
+  // Exclude nights[0] (last night being evaluated) to avoid self-reference
+  const tacticFree = nights.slice(1).filter(n => !n.Tactics || n.Tactics.length === 0)
+  const pool = tacticFree.slice(0, sampleSize)
+  if (pool.length === 0) return null
 
-function getNightsInWindow(nights, days) {
-  const cutoff = new Date()
-  cutoff.setDate(cutoff.getDate() - days)
-  return nights.filter(n => {
-    const date = new Date((n.Date || '').slice(0, 10) + 'T12:00:00')
-    return date >= cutoff
-  })
-}
+  const hasVal = v => v != null && v !== ''
+  const avg = arr => arr.length === 0 ? null : Math.round(arr.reduce((a, b) => a + b, 0) / arr.length)
 
-function calcBaseline(nights, days) {
-  const cutoff = new Date()
-  cutoff.setDate(cutoff.getDate() - days)
-  const baseline = nights.filter(n => {
-    const date = new Date((n.Date || '').slice(0, 10) + 'T12:00:00')
-    return date >= cutoff && (!n.Tactics || n.Tactics.length === 0)
-  })
-  if (baseline.length === 0) return null
-  const avg = arr => Math.round(arr.reduce((a, b) => a + b, 0) / arr.length)
   return {
-    count: baseline.length,
-    totalSleep: avg(baseline.map(n => n['Total Sleep'] || 0)),
-    deepSleep: avg(baseline.map(n => n['Deep Sleep'] || 0)),
-    remSleep: avg(baseline.map(n => n['REM Sleep'] || 0)),
-    bodyBattery: avg(baseline.map(n => n['Body Battery Change'] || 0)),
+    count: pool.length,
+    totalSleep: avg(pool.filter(n => hasVal(n['Total Sleep'])).map(n => n['Total Sleep'])),
+    deepSleep: avg(pool.filter(n => hasVal(n['Deep Sleep'])).map(n => n['Deep Sleep'])),
+    remSleep: avg(pool.filter(n => hasVal(n['REM Sleep'])).map(n => n['REM Sleep'])),
+    bodyBattery: avg(pool.filter(n => hasVal(n['Body Battery Change'])).map(n => n['Body Battery Change'])),
   }
+}
+
+function Delta({ lastVal, avgVal, isMinutes }) {
+  const hasLast = lastVal != null && lastVal !== ''
+  const hasAvg = avgVal != null
+  if (!hasLast || !hasAvg) {
+    return <span className="metric-delta">—</span>
+  }
+  const diff = lastVal - avgVal
+  const positive = diff >= 0
+  let diffStr
+  if (isMinutes) {
+    const absDiff = Math.abs(diff)
+    const h = Math.floor(absDiff / 60)
+    const m = absDiff % 60
+    diffStr = h > 0 ? `${h}h ${m}m` : `${m}m`
+    diffStr = positive ? `+${diffStr}` : `-${diffStr}`
+  } else {
+    diffStr = positive ? `+${diff}` : `${diff}`
+  }
+  return (
+    <span className={`metric-delta ${positive ? 'delta-up' : 'delta-down'}`}>
+      {diffStr} vs avg
+    </span>
+  )
 }
 
 export default function Home({ navigate }) {
   const [nights, setNights] = useState(null)
   const [error, setError] = useState(null)
-  const [days, setDays] = useState(30)
+  const [sampleSize, setSampleSize] = useState(30)
 
   useEffect(() => {
     fetchNights()
@@ -83,8 +95,14 @@ export default function Home({ navigate }) {
   }
 
   const lastNight = nights[0]
-  const baseline = calcBaseline(nights, days)
-  const windowNights = getNightsInWindow(nights, days)
+  const baseline = calcBaseline(nights, sampleSize)
+  const tacticFreeNights = nights.slice(1)
+    .filter(n => !n.Tactics || n.Tactics.length === 0)
+    .slice(0, sampleSize)
+
+  const lastBattery = lastNight['Body Battery Change'] != null && lastNight['Body Battery Change'] !== ''
+    ? lastNight['Body Battery Change']
+    : null
 
   return (
     <div className="screen">
@@ -99,18 +117,22 @@ export default function Home({ navigate }) {
           <div className="metric">
             <span className="metric-label">Total</span>
             <span className="metric-value">{fmtMinutes(lastNight['Total Sleep'])}</span>
+            <Delta lastVal={lastNight['Total Sleep']} avgVal={baseline?.totalSleep} isMinutes />
           </div>
           <div className="metric">
             <span className="metric-label">Deep</span>
             <span className="metric-value">{fmtMinutes(lastNight['Deep Sleep'])}</span>
+            <Delta lastVal={lastNight['Deep Sleep']} avgVal={baseline?.deepSleep} isMinutes />
           </div>
           <div className="metric">
             <span className="metric-label">REM</span>
             <span className="metric-value">{fmtMinutes(lastNight['REM Sleep'])}</span>
+            <Delta lastVal={lastNight['REM Sleep']} avgVal={baseline?.remSleep} isMinutes />
           </div>
           <div className="metric">
             <span className="metric-label">Battery</span>
             <span className="metric-value">{fmtBattery(lastNight['Body Battery Change'])}</span>
+            <Delta lastVal={lastBattery} avgVal={baseline?.bodyBattery} isMinutes={false} />
           </div>
         </div>
         {lastNight.Tactics?.length > 0 && (
@@ -120,64 +142,38 @@ export default function Home({ navigate }) {
 
       <div className="card">
         <div className="card-header">
-          <span className="card-label">Baseline</span>
+          <span className="card-label">Nights</span>
           <div className="toggle-group">
-            {[7, 30, 365].map(d => (
+            {[7, 30, 90].map(n => (
               <button
-                key={d}
-                className={`toggle-btn${days === d ? ' active' : ''}`}
-                onClick={() => setDays(d)}
-              >{d}d</button>
+                key={n}
+                className={`toggle-btn${sampleSize === n ? ' active' : ''}`}
+                onClick={() => setSampleSize(n)}
+              >{n}</button>
             ))}
           </div>
         </div>
-        {baseline ? (
+        {tacticFreeNights.length === 0 ? (
+          <p className="card-empty">No tactic-free nights yet</p>
+        ) : (
           <>
-            <div className="metrics">
-              <div className="metric">
-                <span className="metric-label">Total</span>
-                <span className="metric-value">{fmtMinutes(baseline.totalSleep)}</span>
-              </div>
-              <div className="metric">
-                <span className="metric-label">Deep</span>
-                <span className="metric-value">{fmtMinutes(baseline.deepSleep)}</span>
-              </div>
-              <div className="metric">
-                <span className="metric-label">REM</span>
-                <span className="metric-value">{fmtMinutes(baseline.remSleep)}</span>
-              </div>
-              <div className="metric">
-                <span className="metric-label">Battery</span>
-                <span className="metric-value">{fmtBattery(baseline.bodyBattery)}</span>
-              </div>
+            <div className="nights-avg">
+              <span className="night-date avg-label">Avg</span>
+              <span className="night-metric-val">{fmtMinutes(baseline?.totalSleep)}</span>
+              <span className="night-metric-val">{fmtMinutes(baseline?.deepSleep)}</span>
+              <span className="night-metric-val">{fmtMinutes(baseline?.remSleep)}</span>
+              <span className="night-metric-val">{fmtBattery(baseline?.bodyBattery)}</span>
             </div>
-            <p className="card-footer">{baseline.count} tactic-free night{baseline.count !== 1 ? 's' : ''}</p>
-          </>
-        ) : (
-          <p className="card-empty">Not enough baseline data in this window</p>
-        )}
-      </div>
-
-      <div className="card">
-        <div className="card-header">
-          <span className="card-label">Nights</span>
-          <span className="card-date">{windowNights.length} night{windowNights.length !== 1 ? 's' : ''}</span>
-        </div>
-        {windowNights.length === 0 ? (
-          <p className="card-empty">No nights logged in this window</p>
-        ) : (
-          <div className="nights-list">
-            <div className="nights-header">
-              <span></span>
-              <span>Total</span>
-              <span>Deep</span>
-              <span>REM</span>
-              <span>Bat</span>
-            </div>
-            {windowNights.map(n => {
-              const hasTactics = n.Tactics?.length > 0
-              return (
-                <div key={n.Date} className={`night-row${hasTactics ? ' has-tactics' : ''}`}>
+            <div className="nights-list">
+              <div className="nights-header">
+                <span></span>
+                <span>Total</span>
+                <span>Deep</span>
+                <span>REM</span>
+                <span>Bat</span>
+              </div>
+              {tacticFreeNights.map(n => (
+                <div key={n.Date} className="night-row">
                   <div className="night-row-main">
                     <span className="night-date">{fmtDateShort(n.Date)}</span>
                     <span className="night-metric-val">{fmtMinutes(n['Total Sleep'])}</span>
@@ -185,17 +181,10 @@ export default function Home({ navigate }) {
                     <span className="night-metric-val">{fmtMinutes(n['REM Sleep'])}</span>
                     <span className="night-metric-val">{fmtBattery(n['Body Battery Change'])}</span>
                   </div>
-                  {hasTactics && (
-                    <div className="night-tags">
-                      {n.Tactics.map(t => (
-                        <span key={t} className="night-tag">{fmtTactic(t)}</span>
-                      ))}
-                    </div>
-                  )}
                 </div>
-              )
-            })}
-          </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 

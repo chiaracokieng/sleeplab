@@ -20,13 +20,14 @@ Tactic list
  └── Tap a tactic  →  Commit screen
 
 Commit screen
+ ├── Shows suggested target metrics for this tactic (user can add/remove)
  └── Confirm  →  Home (experiment starts, card updates)
 
 Log screen (nightly)
  └── Active tactic pre-selected, soft warning if deselected
 
 After night 7
- └── Current experiment card shows final result + "Start new" CTA
+ └── Current experiment card shows final result + per-metric verdict + "Start new" CTA
 ```
 
 ---
@@ -44,10 +45,11 @@ Links to tactic list.
 **Active experiment (nights 1–6)**
 - Tactic name + "Night X of 7" progress
 - Running average of experiment nights vs baseline (updates each time user logs)
-- Same metric columns as Last Night card: Total, Deep, REM, Battery
+- Only the targeted metrics are shown (not all four columns); non-targeted metrics are omitted
 
 **Complete (night 7+)**
-- Final averaged result vs baseline
+- Final averaged result vs baseline for each targeted metric
+- Per-metric verdict: "Yes" / "No" / "Marginal" (see verdict rules below)
 - CTA: "Start new experiment"
 
 ---
@@ -64,6 +66,10 @@ Links to tactic list.
 
 - "Try [Tactic] for 7 nights"
 - Shows specific guidance for the tactic (see below)
+- **Target metrics section**: pre-populated with the tactic's suggested metrics; user can toggle each metric on/off before confirming. At least one metric must remain selected.
+  - Label: "What are you hoping to improve?"
+  - Options: Total Sleep · Deep Sleep · REM Sleep · Body Battery
+  - Suggested ones are pre-checked; others unchecked
 - Confirm → saves experiment to Airtable, returns to Home
 
 ---
@@ -86,6 +92,22 @@ Shown on the commit screen when the user starts an experiment. Be concrete — g
 
 ---
 
+## Suggested target metrics per tactic
+
+Each tactic pre-selects the metrics it is most likely to move, based on the mechanism of action. The user can override before confirming.
+
+| Tactic | Suggested metrics | Rationale |
+|---|---|---|
+| Cold room | Deep Sleep, Total Sleep | Core temp drop accelerates sleep onset and deepens slow-wave sleep |
+| Blue blockers | Total Sleep, Body Battery | Earlier melatonin onset → earlier sleep onset → more total sleep and better recovery |
+| Mouth tape | Deep Sleep, Body Battery | Fewer micro-awakenings → more continuous sleep and deeper slow-wave |
+| Caffeine cutoff | Deep Sleep, REM Sleep | Adenosine block specifically suppresses deep and REM sleep |
+| Morning sunlight | Total Sleep, Body Battery | Anchors circadian rhythm → more consistent sleep timing and recovery |
+| Consistent wake time | Total Sleep, Body Battery | Reduces sleep phase drift → more time asleep and better recovery |
+| No alcohol | REM Sleep, Body Battery | Alcohol fragments the second half of the night and suppresses REM by up to 25% |
+
+---
+
 ### Log screen (modified)
 
 - If active experiment: tactic pre-selected
@@ -93,10 +115,33 @@ Shown on the commit screen when the user starts an experiment. Be concrete — g
 
 ---
 
+## Verdict rules (Complete state)
+
+Applied per targeted metric, comparing the 7-night experiment average to the baseline average.
+
+| Label | Condition |
+|---|---|
+| **Yes** | Experiment average beats baseline by more than the noise threshold |
+| **Marginal** | Experiment average beats baseline but within the noise threshold |
+| **No** | Experiment average is at or below baseline |
+
+Noise thresholds (chosen to be meaningful given Garmin's precision):
+- Total Sleep: > 10 min improvement → Yes
+- Deep Sleep: > 5 min improvement → Yes
+- REM Sleep: > 5 min improvement → Yes
+- Body Battery: > 3 points improvement → Yes
+
+Values between 0 and the threshold → Marginal. At or below 0 → No.
+
+---
+
 ## Data
 
 ### `tactics.js` — updated structure
-Each tactic now has: `name`, `impact` (1–3), `doability` (1–3), `blurb`, `source`.
+Each tactic now has: `name`, `impact` (1–3), `doability` (1–3), `blurb`, `source`, `targetMetrics` (array of metric keys).
+
+Metric keys: `totalSleep`, `deepSleep`, `remSleep`, `bodyBattery`.
+
 See [tactics-research.md](./tactics-research.md) for full rationale.
 
 ### Airtable — new `Experiments` table
@@ -106,6 +151,7 @@ See [tactics-research.md](./tactics-research.md) for full rationale.
 | Tactic | Single line text | Matches tactic name |
 | Start date | Date | Date experiment began |
 | Status | Single select | active / complete |
+| Target metrics | Multiple select | Options: Total Sleep, Deep Sleep, REM Sleep, Body Battery |
 
 ---
 

@@ -19,6 +19,25 @@ function fmtDate(dateStr) {
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
 }
 
+function fmtDateShort(dateStr) {
+  if (!dateStr) return ''
+  const d = new Date(dateStr.slice(0, 10) + 'T12:00:00')
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+function fmtTactic(name) {
+  return name.slice(0, 3).toUpperCase()
+}
+
+function getNightsInWindow(nights, days) {
+  const cutoff = new Date()
+  cutoff.setDate(cutoff.getDate() - days)
+  return nights.filter(n => {
+    const date = new Date((n.Date || '').slice(0, 10) + 'T12:00:00')
+    return date >= cutoff
+  })
+}
+
 function calcBaseline(nights, days) {
   const cutoff = new Date()
   cutoff.setDate(cutoff.getDate() - days)
@@ -65,6 +84,7 @@ export default function Home({ navigate }) {
 
   const lastNight = nights[0]
   const baseline = calcBaseline(nights, days)
+  const windowNights = getNightsInWindow(nights, days)
 
   return (
     <div className="screen">
@@ -135,6 +155,47 @@ export default function Home({ navigate }) {
           </>
         ) : (
           <p className="card-empty">Not enough baseline data in this window</p>
+        )}
+      </div>
+
+      <div className="card">
+        <div className="card-header">
+          <span className="card-label">Nights</span>
+          <span className="card-date">{windowNights.length} night{windowNights.length !== 1 ? 's' : ''}</span>
+        </div>
+        {windowNights.length === 0 ? (
+          <p className="card-empty">No nights logged in this window</p>
+        ) : (
+          <div className="nights-list">
+            <div className="nights-header">
+              <span></span>
+              <span>Total</span>
+              <span>Deep</span>
+              <span>REM</span>
+              <span>Bat</span>
+            </div>
+            {windowNights.map(n => {
+              const hasTactics = n.Tactics?.length > 0
+              return (
+                <div key={n.Date} className={`night-row${hasTactics ? ' has-tactics' : ''}`}>
+                  <div className="night-row-main">
+                    <span className="night-date">{fmtDateShort(n.Date)}</span>
+                    <span className="night-metric-val">{fmtMinutes(n['Total Sleep'])}</span>
+                    <span className="night-metric-val">{fmtMinutes(n['Deep Sleep'])}</span>
+                    <span className="night-metric-val">{fmtMinutes(n['REM Sleep'])}</span>
+                    <span className="night-metric-val">{fmtBattery(n['Body Battery Change'])}</span>
+                  </div>
+                  {hasTactics && (
+                    <div className="night-tags">
+                      {n.Tactics.map(t => (
+                        <span key={t} className="night-tag">{fmtTactic(t)}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
         )}
       </div>
 

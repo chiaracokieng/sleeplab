@@ -54,6 +54,17 @@
   color: var(--text);
 }
 
+.card-label-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-subtitle {
+  font-size: 11px;
+  color: var(--text);
+}
+
 .card-date {
   font-size: 14px;
   color: var(--text);

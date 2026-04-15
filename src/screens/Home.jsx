@@ -142,7 +142,10 @@ export default function Home({ navigate }) {
 
       <div className="card">
         <div className="card-header">
-          <span className="card-label">Nights</span>
+          <div className="card-label-group">
+            <span className="card-label">Baseline</span>
+            <span className="card-subtitle">tactic-free nights</span>
+          </div>
           <div className="toggle-group">
             {[7, 30, 90].map(n => (
               <button

@@ -1,5 +1,7 @@
 # Sleep Lab
 
+**Live app: [sleeplab.vercel.app](https://sleeplab.vercel.app)**
+
 A progressive web app to make use of Garmin's sleep data and measure which tactics actually improve your sleep.
 
 ## Why build this? 

@@ -20,14 +20,15 @@ Tactic list
  └── Tap a tactic  →  Commit screen
 
 Commit screen
- ├── Shows suggested target metrics for this tactic (user can add/remove)
+ ├── Shows what the tactic is expected to improve (read-only, app decides)
  └── Confirm  →  Home (experiment starts, card updates)
 
-Log screen (nightly)
- └── Active tactic pre-selected, soft warning if deselected
+Log screen (nightly, nights 1–6)
+ ├── Active tactic pre-selected, soft warning if deselected
+ └── Each log updates the running result in the experiment card
 
 After night 7
- └── Current experiment card shows final result + per-metric verdict + "Start new" CTA
+ └── Current experiment card shows final result + overall conclusion + "Start new" CTA
 ```
 
 ---
@@ -44,13 +45,21 @@ Links to tactic list.
 
 **Active experiment (nights 1–6)**
 - Tactic name + "Night X of 7" progress
-- Running average of experiment nights vs baseline (updates each time user logs)
-- Only the targeted metrics are shown (not all four columns); non-targeted metrics are omitted
+- Motivational blurb from `tactics.js` `blurb` field (same text as shown in the tactic list)
+- All 4 metrics shown with headline delta vs baseline; targeted metrics visually distinguished (bold or accent color)
+- Card updates each time the user logs a night
+- Tap card → bottom sheet with full sparkline detail (see below)
 
 **Complete (night 7+)**
-- Final averaged result vs baseline for each targeted metric
-- Per-metric verdict: "Yes" / "No" / "Marginal" (see verdict rules below)
+- Same summary card layout; tap → bottom sheet
+- Bottom sheet shows all 4 metrics, deltas, sparklines for all 7 nights + overall conclusion sentence
 - CTA: "Start new experiment"
+
+**Bottom sheet (active + complete)**
+- Per metric row: name · running average delta · sparkline
+  - Sparkline: per-night raw values as dots, baseline mean as a fixed horizontal reference line; ~80×20px, no axes or labels
+- Targeted metrics visually distinguished
+- Complete state adds the conclusion sentence below the metrics
 
 ---
 
@@ -66,10 +75,7 @@ Links to tactic list.
 
 - "Try [Tactic] for 7 nights"
 - Shows specific guidance for the tactic (see below)
-- **Target metrics section**: pre-populated with the tactic's suggested metrics; user can toggle each metric on/off before confirming. At least one metric must remain selected.
-  - Label: "What are you hoping to improve?"
-  - Options: Total Sleep · Deep Sleep · REM Sleep · Body Battery
-  - Suggested ones are pre-checked; others unchecked
+- **Target metrics section**: read-only, app-determined. Displays which metrics this tactic is expected to improve (e.g. "Expected to improve: Deep Sleep, Body Battery"). User cannot add or remove metrics.
 - Confirm → saves experiment to Airtable, returns to Home
 
 ---
@@ -92,9 +98,9 @@ Shown on the commit screen when the user starts an experiment. Be concrete — g
 
 ---
 
-## Suggested target metrics per tactic
+## Target metrics per tactic
 
-Each tactic pre-selects the metrics it is most likely to move, based on the mechanism of action. The user can override before confirming.
+Each tactic has a fixed set of metrics it is most likely to move, based on the mechanism of action. These are app-determined and not editable by the user.
 
 | Tactic | Suggested metrics | Rationale |
 |---|---|---|
@@ -117,9 +123,11 @@ Each tactic pre-selects the metrics it is most likely to move, based on the mech
 
 ## Verdict rules (Complete state)
 
-Applied per targeted metric, comparing the 7-night experiment average to the baseline average.
+These thresholds are used internally to generate the overall conclusion sentence — they are not shown as per-metric labels to the user.
 
-| Label | Condition |
+Each targeted metric is scored by comparing the 7-night experiment average to the baseline average:
+
+| Score | Condition |
 |---|---|
 | **Yes** | Experiment average beats baseline by more than the noise threshold |
 | **Marginal** | Experiment average beats baseline but within the noise threshold |
@@ -132,6 +140,31 @@ Noise thresholds (chosen to be meaningful given Garmin's precision):
 - Body Battery: > 3 points improvement → Yes
 
 Values between 0 and the threshold → Marginal. At or below 0 → No.
+
+**Why these thresholds exist — the Garmin data problem**
+
+Garmin sleep tracking is consumer-grade, not medical-grade. Two sources of noise make raw nightly numbers unreliable on their own:
+
+1. **Device noise**: Garmin's algorithm estimates sleep stages from wrist movement and heart rate. It can misclassify light sleep as deep, or miss brief awakenings. The error margin on any single night is meaningful — probably ±5–10 min for deep/REM sleep stages.
+
+2. **Biological variability**: Even without any intervention, your sleep varies night to night. Total sleep alone can swing 20–30 min just from minor differences in stress, timing, or temperature. This is normal and not signal.
+
+The thresholds are set to be larger than device noise (so a verdict isn't triggered by measurement error) but small enough to catch a genuine effect over 7 nights. Averaging 7 nights helps substantially — random noise cancels out, real effects accumulate.
+
+Implication for the user: a 3-minute improvement in deep sleep on one night means nothing. A 7-minute average improvement across 7 nights, consistently above baseline, is worth paying attention to.
+
+> **Future**: surface a version of this explanation in the app — either as a tooltip on the verdict, or as a short "how to read this" note in the bottom sheet. The goal is to teach the user to interpret their own Garmin data more accurately, not just report numbers.
+
+**Conclusion template logic** (applied to targeted metrics only):
+
+| Outcome | Conclusion sentence |
+|---|---|
+| 2+ targeted metrics are Yes | "[Tactic] meaningfully improved your [metrics]. Worth continuing." |
+| 1 Yes + 1 Marginal | "[Tactic] showed modest improvement in [metrics]. Results are encouraging but not conclusive." |
+| All Marginal | "[Tactic] had a small effect on [metrics] — not enough to be confident. Try more nights or a different tactic." |
+| All No | "No meaningful change across 7 nights. [Tactic] may not be the right lever for your sleep." |
+
+> **Future upgrade**: replace template logic with a Claude API call at completion time, storing the generated text back to Airtable. See Out of scope.
 
 ---
 
@@ -169,3 +202,4 @@ Current order: Cold room → Blue blockers → Mouth tape → Caffeine cutoff �
 - Multiple simultaneous experiments
 - User-editable tactic ratings
 - Statistical significance display
+- Claude API-generated conclusion (upgrade to current template-based conclusion; call happens once at night 7, result stored in Airtable)

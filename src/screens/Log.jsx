@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { saveNight } from '../airtable'
-import { DEFAULT_TACTICS } from '../tactics'
+import { TACTIC_NAMES } from '../tactics'
 
 const today = new Date().toISOString().split('T')[0]
 const CUSTOM_KEY = 'sleeplab_custom_tactics'
@@ -31,7 +31,7 @@ export default function Log({ navigate }) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
 
-  const allTactics = [...DEFAULT_TACTICS, ...customTactics]
+  const allTactics = [...TACTIC_NAMES, ...customTactics]
 
   function toggleTactic(t) {
     setForm(f => ({

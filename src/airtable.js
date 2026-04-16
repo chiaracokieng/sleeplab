@@ -37,6 +37,10 @@ export async function saveNight(fields) {
     headers,
     body: JSON.stringify({ fields }),
   })
-  if (!res.ok) throw new Error(`Airtable error ${res.status}`)
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    const detail = body?.error?.message || body?.error?.type || ''
+    throw new Error(`Airtable error ${res.status}${detail ? ': ' + detail : ''}`)
+  }
   return res.json()
 }

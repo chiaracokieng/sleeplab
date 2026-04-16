@@ -2,8 +2,12 @@ import { useState } from 'react'
 import { saveNight } from '../airtable'
 import { TACTIC_NAMES } from '../tactics'
 
-const today = new Date().toISOString().split('T')[0]
 const CUSTOM_KEY = 'sleeplab_custom_tactics'
+
+function localToday() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
 
 function loadCustomTactics() {
   try {
@@ -15,7 +19,7 @@ function loadCustomTactics() {
 
 export default function Log({ navigate }) {
   const [form, setForm] = useState({
-    date: today,
+    date: localToday(),
     totalSleepH: '',
     totalSleepM: '',
     deepSleepH: '',

@@ -1,6 +1,6 @@
 # Spec 0.2.1 — Tactic card
 
-> **Draft** — implementation not started. Continuing later.
+> **Abandoned** — superseded by spec-0.2.2 (tactic effect card with actual delta data).
 
 ## Goal
 

@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react'
 import { fetchNights } from '../airtable'
 import { fmtMinutes, fmtBattery, fmtDate, fmtDateShort, calcBaseline } from '../utils'
 
-function Delta({ lastVal, avgVal, isMinutes }) {
-  const hasLast = lastVal != null && lastVal !== ''
-  const hasAvg = avgVal != null
-  if (!hasLast || !hasAvg) {
+function Delta({ val, baselineVal, isMinutes, label = 'avg' }) {
+  const hasVal = val != null && val !== ''
+  const hasBaseline = baselineVal != null
+  if (!hasVal || !hasBaseline) {
     return <span className="metric-delta">—</span>
   }
-  const diff = lastVal - avgVal
+  const diff = val - baselineVal
   const positive = diff >= 0
   let diffStr
   if (isMinutes) {
@@ -22,7 +22,7 @@ function Delta({ lastVal, avgVal, isMinutes }) {
   }
   return (
     <span className={`metric-delta ${positive ? 'delta-up' : 'delta-down'}`}>
-      {diffStr} vs avg
+      {diffStr} vs {label}
     </span>
   )
 }
@@ -55,9 +55,8 @@ export default function Home({ navigate }) {
 
   const lastNight = nights[0]
   const baseline = calcBaseline(nights, sampleSize)
-  const tacticFreeNights = nights.slice(1)
+  const tacticFreeNights = nights.slice(1, sampleSize + 1)
     .filter(n => !n.Tactics || n.Tactics.length === 0)
-    .slice(0, sampleSize)
 
   const lastBattery = lastNight['Body Battery Change'] != null && lastNight['Body Battery Change'] !== ''
     ? lastNight['Body Battery Change']
@@ -76,22 +75,22 @@ export default function Home({ navigate }) {
           <div className="metric">
             <span className="metric-label">Total</span>
             <span className="metric-value">{fmtMinutes(lastNight['Total Sleep'])}</span>
-            <Delta lastVal={lastNight['Total Sleep']} avgVal={baseline?.totalSleep} isMinutes />
+            <Delta val={lastNight['Total Sleep']} baselineVal={baseline?.totalSleep} isMinutes />
           </div>
           <div className="metric">
             <span className="metric-label">Deep</span>
             <span className="metric-value">{fmtMinutes(lastNight['Deep Sleep'])}</span>
-            <Delta lastVal={lastNight['Deep Sleep']} avgVal={baseline?.deepSleep} isMinutes />
+            <Delta val={lastNight['Deep Sleep']} baselineVal={baseline?.deepSleep} isMinutes />
           </div>
           <div className="metric">
             <span className="metric-label">REM</span>
             <span className="metric-value">{fmtMinutes(lastNight['REM Sleep'])}</span>
-            <Delta lastVal={lastNight['REM Sleep']} avgVal={baseline?.remSleep} isMinutes />
+            <Delta val={lastNight['REM Sleep']} baselineVal={baseline?.remSleep} isMinutes />
           </div>
           <div className="metric">
             <span className="metric-label">Battery</span>
             <span className="metric-value">{fmtBattery(lastNight['Body Battery Change'])}</span>
-            <Delta lastVal={lastBattery} avgVal={baseline?.bodyBattery} isMinutes={false} />
+            <Delta val={lastBattery} baselineVal={baseline?.bodyBattery} isMinutes={false} />
           </div>
         </div>
         {lastNight.Tactics?.length > 0 && (

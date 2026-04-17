@@ -23,9 +23,11 @@ export function fmtDateShort(dateStr) {
 }
 
 export function calcBaseline(nights, sampleSize) {
-  // Exclude nights[0] (last night being evaluated) to avoid self-reference
-  const tacticFree = nights.slice(1).filter(n => !n.Tactics || n.Tactics.length === 0)
-  const pool = tacticFree.slice(0, sampleSize)
+  // sampleSize = total nights scanned (not tactic-free nights counted). This keeps the baseline
+  // and tactic averages on the same time window so deltas are a valid comparison. E.g. with
+  // sampleSize=30, both baseline and tactic avg draw only from the last 30 logged nights.
+  // nights[0] (last night) is excluded to avoid self-reference in the Last Night delta.
+  const pool = nights.slice(1, sampleSize + 1).filter(n => !n.Tactics || n.Tactics.length === 0)
   if (pool.length === 0) return null
 
   const hasVal = v => v != null && v !== ''

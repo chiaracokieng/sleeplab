@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { fetchNights } from '../airtable'
-import { fmtMinutes, fmtBattery, fmtDate, fmtDateShort, calcBaseline } from '../utils'
+import { fmtMinutes, fmtBattery, fmtDate, fmtDateShort, calcBaseline, calcWindowBaseline, calcTacticAvg } from '../utils'
 
 function Delta({ val, baselineVal, isMinutes, label = 'avg' }) {
   const hasVal = val != null && val !== ''
@@ -58,6 +58,14 @@ export default function Home({ navigate }) {
   const tacticFreeNights = nights.slice(1, sampleSize + 1)
     .filter(n => !n.Tactics || n.Tactics.length === 0)
 
+  const windowNights = nights.slice(0, sampleSize)
+  const tacticWindowBaseline = calcWindowBaseline(nights, sampleSize)
+  const tacticNames = [...new Set(windowNights.flatMap(n => n.Tactics ?? []))]
+  const tacticAvgs = tacticNames
+    .map(name => ({ name, avg: calcTacticAvg(nights, name, sampleSize) }))
+    .filter(t => t.avg !== null)
+    .sort((a, b) => b.avg.count - a.avg.count)
+
   const lastBattery = lastNight['Body Battery Change'] != null && lastNight['Body Battery Change'] !== ''
     ? lastNight['Body Battery Change']
     : null
@@ -105,7 +113,7 @@ export default function Home({ navigate }) {
             <span className="card-subtitle">tactic-free nights</span>
           </div>
           <div className="toggle-group">
-            {[7, 30, 90].map(n => (
+            {[30, 60, 90].map(n => (
               <button
                 key={n}
                 className={`toggle-btn${sampleSize === n ? ' active' : ''}`}
@@ -148,6 +156,37 @@ export default function Home({ navigate }) {
           </>
         )}
       </div>
+
+      {tacticAvgs.map(({ name, avg }) => (
+        <div key={name} className="card">
+          <div className="card-header">
+            <span className="card-label">{name}</span>
+            <span className="card-subtitle">{avg.count === 1 ? '1 night so far' : `${avg.count} nights so far`}</span>
+          </div>
+          <div className="metrics">
+            <div className="metric">
+              <span className="metric-label">Total</span>
+              <span className="metric-value">{fmtMinutes(avg.totalSleep)}</span>
+              <Delta val={avg.totalSleep} baselineVal={tacticWindowBaseline?.totalSleep} isMinutes label="baseline" />
+            </div>
+            <div className="metric">
+              <span className="metric-label">Deep</span>
+              <span className="metric-value">{fmtMinutes(avg.deepSleep)}</span>
+              <Delta val={avg.deepSleep} baselineVal={tacticWindowBaseline?.deepSleep} isMinutes label="baseline" />
+            </div>
+            <div className="metric">
+              <span className="metric-label">REM</span>
+              <span className="metric-value">{fmtMinutes(avg.remSleep)}</span>
+              <Delta val={avg.remSleep} baselineVal={tacticWindowBaseline?.remSleep} isMinutes label="baseline" />
+            </div>
+            <div className="metric">
+              <span className="metric-label">Battery</span>
+              <span className="metric-value">{fmtBattery(avg.bodyBattery)}</span>
+              <Delta val={avg.bodyBattery} baselineVal={tacticWindowBaseline?.bodyBattery} isMinutes={false} label="baseline" />
+            </div>
+          </div>
+        </div>
+      ))}
 
       <button className="fab" onClick={() => navigate('log')}>+ Log</button>
     </div>

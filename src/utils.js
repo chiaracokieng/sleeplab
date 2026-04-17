@@ -22,6 +22,38 @@ export function fmtDateShort(dateStr) {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
+export function calcWindowBaseline(nights, sampleSize) {
+  const pool = nights.slice(0, sampleSize).filter(n => !n.Tactics || n.Tactics.length === 0)
+  if (pool.length === 0) return null
+
+  const hasVal = v => v != null && v !== ''
+  const avg = arr => arr.length === 0 ? null : Math.round(arr.reduce((a, b) => a + b, 0) / arr.length)
+
+  return {
+    count: pool.length,
+    totalSleep: avg(pool.filter(n => hasVal(n['Total Sleep'])).map(n => n['Total Sleep'])),
+    deepSleep: avg(pool.filter(n => hasVal(n['Deep Sleep'])).map(n => n['Deep Sleep'])),
+    remSleep: avg(pool.filter(n => hasVal(n['REM Sleep'])).map(n => n['REM Sleep'])),
+    bodyBattery: avg(pool.filter(n => hasVal(n['Body Battery Change'])).map(n => n['Body Battery Change'])),
+  }
+}
+
+export function calcTacticAvg(nights, tacticName, sampleSize) {
+  const pool = nights.slice(0, sampleSize).filter(n => n.Tactics?.includes(tacticName))
+  if (pool.length === 0) return null
+
+  const hasVal = v => v != null && v !== ''
+  const avg = arr => arr.length === 0 ? null : Math.round(arr.reduce((a, b) => a + b, 0) / arr.length)
+
+  return {
+    count: pool.length,
+    totalSleep: avg(pool.filter(n => hasVal(n['Total Sleep'])).map(n => n['Total Sleep'])),
+    deepSleep: avg(pool.filter(n => hasVal(n['Deep Sleep'])).map(n => n['Deep Sleep'])),
+    remSleep: avg(pool.filter(n => hasVal(n['REM Sleep'])).map(n => n['REM Sleep'])),
+    bodyBattery: avg(pool.filter(n => hasVal(n['Body Battery Change'])).map(n => n['Body Battery Change'])),
+  }
+}
+
 export function calcBaseline(nights, sampleSize) {
   // sampleSize = total nights scanned (not tactic-free nights counted). This keeps the baseline
   // and tactic averages on the same time window so deltas are a valid comparison. E.g. with

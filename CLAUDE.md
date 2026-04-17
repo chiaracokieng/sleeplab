@@ -39,7 +39,7 @@ src/
   App.css           — All app-specific styles
   index.css         — Base styles and CSS variables (colors, fonts)
 docs/
-  planning.md
+  decisions.md
   spec-0.1-core.md
   spec-0.2-experiments.md
   spec-0.2.1-tactic-card.md

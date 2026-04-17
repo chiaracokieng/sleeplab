@@ -24,7 +24,7 @@ This uses the already-fetched `nights` array; no extra Airtable call.
 
 ### Multiple tactics on last night
 
-Show the card for the **first tactic in `DEFAULT_TACTICS` order** that appears in last night's log. If none of last night's tactics are in `DEFAULT_TACTICS` (i.e. all custom), use the first tactic in last night's `Tactics` array.
+Show the card for the tactic with the **longest current streak** among last night's tactics. Ties broken by `DEFAULT_TACTICS` order. If none of last night's tactics are in `DEFAULT_TACTICS` (i.e. all custom), use the first tactic in last night's `Tactics` array.
 
 Only one tactic card is shown at a time.
 
@@ -40,7 +40,7 @@ Standard `.card` container. Positioned between the Last Night card and the Basel
 
 ```
 ┌─────────────────────────────────────┐
-│ ACTIVE TACTIC          Night 2      │
+│ ACTIVE EXPERIMENT      Night 2      │
 │                                     │
 │ Mouth Tape                          │
 │                                     │
@@ -50,7 +50,7 @@ Standard `.card` container. Positioned between the Last Night card and the Basel
 └─────────────────────────────────────┘
 ```
 
-- Card label: `ACTIVE TACTIC` (same `.card-label` style as other cards)
+- Card label: `ACTIVE EXPERIMENT` (same `.card-label` style as other cards)
 - Right-aligned: `Night X` in `.card-date` style
 - Tactic name: 17px, `var(--text-h)`, `font-weight: 600`
 - Blurb: 14px, `var(--text)`, normal weight; no truncation

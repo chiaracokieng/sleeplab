@@ -9,9 +9,10 @@ npm run dev       # Start dev server (Vite HMR)
 npm run build     # Production build
 npm run preview   # Preview production build locally
 npm run lint      # Run ESLint
+npm test          # Run Vitest (pure function unit tests)
 ```
 
-There are no tests.
+Tests live in `src/__tests__/`. See `docs/test.md` for what's covered and the checklist for new code.
 
 ## What this app is
 

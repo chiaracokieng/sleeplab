@@ -31,13 +31,19 @@ The core question: **How does doing X change my sleep quality?**
 ```
 src/
   airtable.js       — fetchNights() and saveNight(fields); handles Airtable pagination
-  tactics.js        — DEFAULT_TACTICS array (pre-loaded list ranked by evidence)
+  tactics.js        — DEFAULT_TACTICS (objects with name, impact, doability, blurb, source) + TACTIC_NAMES (string array)
   screens/
-    Home.jsx        — Last Night card + Baseline card with 7/30/365 toggle
+    Home.jsx        — Last Night card + Baseline card with 7/30/90 toggle
     Log.jsx         — Entry form; custom tactics persisted to localStorage
   App.jsx           — Screen switcher
   App.css           — All app-specific styles
   index.css         — Base styles and CSS variables (colors, fonts)
+docs/
+  planning.md
+  spec-0.1-core.md
+  spec-0.2-experiments.md
+  spec-0.2.1-tactic-card.md
+  tactics-research.md
 ```
 
 ## Data model (Airtable — "Nights" table)
@@ -53,7 +59,7 @@ src/
 | Tactics | Multiple select | Options match `DEFAULT_TACTICS` in `tactics.js` |
 | Notes | Long text | Optional |
 
-**Baseline** = average of nights with no tactics selected, within the chosen time window (7 / 30 / 365 days).
+**Baseline** = average of nights with no tactics selected, within the chosen time window (7 / 30 / 90 days).
 
 ## Key decisions
 

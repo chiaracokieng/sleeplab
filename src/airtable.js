@@ -16,7 +16,11 @@ async function fetchPage(offset) {
   })
   if (offset) params.set('offset', offset)
   const res = await fetch(`${BASE_URL}?${params}`, { headers })
-  if (!res.ok) throw new Error(`Airtable error ${res.status}`)
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    const detail = body?.error?.message || body?.error?.type || ''
+    throw new Error(`Airtable error ${res.status}${detail ? ': ' + detail : ''}`)
+  }
   return res.json()
 }
 

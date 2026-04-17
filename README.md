@@ -24,7 +24,7 @@ Entered manually each morning from Garmin Connect:
 * Body Battery Change
 
 ### Screens
-1. **Home** — Last night's stats compared to my baseline (non-tactics nights), with a toggle for last 7 / 30 / 365 days.
+1. **Home** — Last night's stats compared to my baseline (non-tactics nights), with a toggle for last 7 / 30 / 90 days.
 2. **Log** — A form to enter last night's metrics and tag which tactics I tried.
 
 ### Tactics

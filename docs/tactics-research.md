@@ -70,6 +70,17 @@ Doability rated medium because it requires going outside in the morning, which c
 
 ---
 
+### 6.5. 528 Hz playlist
+**Impact: low · Doability: high**
+
+A calming playlist before or during sleep can reduce pre-sleep anxiety and establish a consistent wind-down ritual, both of which support faster sleep onset. Any benefit comes from the relaxation response — the 528 Hz frequency claim (a "solfeggio frequency" said to resonate with DNA or promote healing) is not supported by sleep research or peer-reviewed evidence.
+
+Doability is high: passive, zero friction, just press play. Impact is low because the mechanism is general relaxation, not a targeted sleep intervention.
+
+*Sources: General relaxation and sleep onset research; 528 Hz frequency claims are not evidence-based*
+
+---
+
 ### 6. Consistent wake time
 **Impact: high · Doability: low**
 

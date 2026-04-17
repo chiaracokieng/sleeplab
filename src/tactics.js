@@ -37,6 +37,13 @@ export const DEFAULT_TACTICS = [
     source: 'Huberman Lab, circadian biology research',
   },
   {
+    name: '528 Hz playlist',
+    impact: 1,
+    doability: 3,
+    blurb: 'A calming playlist can ease pre-sleep anxiety and create a consistent wind-down ritual. Any benefit comes from relaxation, not the specific frequency.',
+    source: 'General relaxation research; 528 Hz frequency claims are not evidence-based',
+  },
+  {
     name: 'Consistent wake time',
     impact: 3,
     doability: 1,

@@ -106,6 +106,37 @@ export default function Home({ navigate }) {
         )}
       </div>
 
+      {tacticAvgs.map(({ name, avg }) => (
+        <div key={name} className="card">
+          <div className="card-header">
+            <span className="card-label">{name}</span>
+            <span className="card-subtitle">{avg.count === 1 ? '1 night so far' : `${avg.count} nights so far`}</span>
+          </div>
+          <div className="metrics">
+            <div className="metric">
+              <span className="metric-label">Total</span>
+              <span className="metric-value">{fmtMinutes(avg.totalSleep)}</span>
+              <Delta val={avg.totalSleep} baselineVal={tacticWindowBaseline?.totalSleep} isMinutes label="baseline" />
+            </div>
+            <div className="metric">
+              <span className="metric-label">Deep</span>
+              <span className="metric-value">{fmtMinutes(avg.deepSleep)}</span>
+              <Delta val={avg.deepSleep} baselineVal={tacticWindowBaseline?.deepSleep} isMinutes label="baseline" />
+            </div>
+            <div className="metric">
+              <span className="metric-label">REM</span>
+              <span className="metric-value">{fmtMinutes(avg.remSleep)}</span>
+              <Delta val={avg.remSleep} baselineVal={tacticWindowBaseline?.remSleep} isMinutes label="baseline" />
+            </div>
+            <div className="metric">
+              <span className="metric-label">Battery</span>
+              <span className="metric-value">{fmtBattery(avg.bodyBattery)}</span>
+              <Delta val={avg.bodyBattery} baselineVal={tacticWindowBaseline?.bodyBattery} isMinutes={false} label="baseline" />
+            </div>
+          </div>
+        </div>
+      ))}
+
       <div className="card">
         <div className="card-header">
           <div className="card-label-group">
@@ -156,37 +187,6 @@ export default function Home({ navigate }) {
           </>
         )}
       </div>
-
-      {tacticAvgs.map(({ name, avg }) => (
-        <div key={name} className="card">
-          <div className="card-header">
-            <span className="card-label">{name}</span>
-            <span className="card-subtitle">{avg.count === 1 ? '1 night so far' : `${avg.count} nights so far`}</span>
-          </div>
-          <div className="metrics">
-            <div className="metric">
-              <span className="metric-label">Total</span>
-              <span className="metric-value">{fmtMinutes(avg.totalSleep)}</span>
-              <Delta val={avg.totalSleep} baselineVal={tacticWindowBaseline?.totalSleep} isMinutes label="baseline" />
-            </div>
-            <div className="metric">
-              <span className="metric-label">Deep</span>
-              <span className="metric-value">{fmtMinutes(avg.deepSleep)}</span>
-              <Delta val={avg.deepSleep} baselineVal={tacticWindowBaseline?.deepSleep} isMinutes label="baseline" />
-            </div>
-            <div className="metric">
-              <span className="metric-label">REM</span>
-              <span className="metric-value">{fmtMinutes(avg.remSleep)}</span>
-              <Delta val={avg.remSleep} baselineVal={tacticWindowBaseline?.remSleep} isMinutes label="baseline" />
-            </div>
-            <div className="metric">
-              <span className="metric-label">Battery</span>
-              <span className="metric-value">{fmtBattery(avg.bodyBattery)}</span>
-              <Delta val={avg.bodyBattery} baselineVal={tacticWindowBaseline?.bodyBattery} isMinutes={false} label="baseline" />
-            </div>
-          </div>
-        </div>
-      ))}
 
       <button className="fab" onClick={() => navigate('log')}>+ Log</button>
     </div>

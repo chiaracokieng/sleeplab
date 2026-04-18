@@ -48,6 +48,14 @@
   box-shadow: var(--shadow);
 }
 
+.card-clickable {
+  cursor: pointer;
+
+  &:hover {
+    background: var(--border);
+  }
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;

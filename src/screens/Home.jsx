@@ -80,12 +80,11 @@ export default function Home({ navigate }) {
     <div className="screen">
       <h1 className="app-title">🌙 Sleep Lab</h1>
 
-      <div className="card">
+      <div className="card card-clickable" onClick={() => navigate('log', { editRecord: lastNight })}>
         <div className="card-header">
           <span className="card-label">Last Night</span>
           <div className="card-header-right">
             <span className="card-date">{fmtDate(lastNight.Date)}</span>
-            <button className="edit-btn" onClick={() => navigate('log', { editRecord: lastNight })}>Edit</button>
           </div>
         </div>
         <div className="metrics">

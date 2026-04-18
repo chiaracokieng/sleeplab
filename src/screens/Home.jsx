@@ -134,13 +134,8 @@ export default function Home({ navigate }) {
             <div className="card-header">
               <div className="card-label-group">
                 <span className="card-label">{name}</span>
-                <span className="card-subtitle">{avg.count === 1 ? '1 night so far' : `${avg.count} nights so far`}</span>
               </div>
-              {tacticInfo && (
-                <button className="blurb-toggle" onClick={toggleExpand} aria-expanded={expanded}>
-                  {expanded ? 'Hide' : 'How it works'}
-                </button>
-              )}
+              <span className="card-subtitle">{avg.count === 1 ? '1 night so far' : `${avg.count} nights so far`}</span>
             </div>
             <div className="metrics">
               <div className="metric">
@@ -166,6 +161,11 @@ export default function Home({ navigate }) {
             </div>
             {tacticInfo && expanded && (
               <p className="card-blurb">{tacticInfo.blurb}</p>
+            )}
+            {tacticInfo && (
+              <button className="blurb-toggle" onClick={toggleExpand} aria-expanded={expanded}>
+                {expanded ? 'Hide' : 'What to expect'}
+              </button>
             )}
           </div>
         )

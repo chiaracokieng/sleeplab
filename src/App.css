@@ -412,6 +412,9 @@
   padding: 0;
   cursor: pointer;
   line-height: 1;
+  text-align: left;
+  margin-top: 14px;
+  display: block;
 }
 
 .card-blurb {

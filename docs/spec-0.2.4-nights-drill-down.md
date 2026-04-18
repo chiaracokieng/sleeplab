@@ -22,7 +22,7 @@ Each card owns exactly one dataset. Comparison happens through delta values, not
 
 ### 1. Remove the 30/60/90 toggle
 
-The `sampleSize` state and its toggle UI are removed. The window is hardcoded to **30 days** (the last 30 logged nights). This applies everywhere: Last Night deltas, tactic averages, and the baseline.
+The `sampleSize` state and its toggle UI are removed. The window is hardcoded to **the last 30 logged nights**. This applies everywhere: Last Night deltas, tactic averages, and the baseline.
 
 ### 2. Tactic cards — experiment nights list
 
@@ -80,16 +80,22 @@ No new Airtable fields. All computed from `fetchNights()` output.
 
 **Window:** `nights.slice(0, 30)` everywhere. `sampleSize` state is removed; replace all references with the literal `30`.
 
-**Tactic nights list** (per tactic card): nights within the window where `Tactics` includes that tactic name, sorted newest first (already in order from `fetchNights`).
+**Single baseline function:** Use `calcWindowBaseline(analysisNights, 30)` everywhere — Last Night deltas, tactic card deltas, and the Baseline Avg row. Delete `calcBaseline` and `buildBaselineInput`. If `lastNight` is tactic-free and non-excluded, it is included in the baseline pool (1/30 weight; self-reference effect is negligible). All three cards reference the same pool, so numbers are consistent. **Intentional behavior change from today:** the previous `calcBaseline` excluded `nights[0]` to avoid self-reference in the Last Night delta; this spec drops that exclusion. As a result, the Baseline Avg value and the baseline nights list will include lastNight when it is tactic-free. The 1/30 distortion is accepted as negligible in exchange for a single consistent pool.
 
-**Baseline nights list**: nights within the window where `Tactics` is empty or missing, sorted newest first.
+**Tactic nights list** (per tactic card): nights within the window where `Tactics` includes that tactic name, sorted newest first (already in order from `fetchNights`). Add `nights: pool` to the `calcTacticAvg` return value so the list is available without re-filtering inline.
+
+**Baseline nights list**: nights within the window where `Tactics` is empty or missing, sorted newest first. The Avg row is the mean of this exact pool.
 
 ---
 
 ## Implementation notes
 
 - Remove `sampleSize` useState and the toggle-group JSX from `Home.jsx`
-- Replace all `sampleSize` references with `30`
+- Remove `calcBaseline`, `buildBaselineInput` from the `utils` import and delete both functions from `utils.js`; delete their tests from `utils.test.js` (see `decisions.md` 2026-04-18 for the supersession note)
+- Remove `windowNights` and `tacticWindowBaseline` from `Home.jsx` — both become dead code once `sampleSize` is removed
+- Replace the `baseline` and `tacticWindowBaseline` consts with a single `calcWindowBaseline(analysisNights, 30)` call — used for Last Night deltas, tactic deltas, and the Baseline Avg row
+- Remove the `tacticFreeNights` variable; derive the Baseline card rows inline as `analysisNights.slice(0, 30).filter(n => !n.Tactics || n.Tactics.length === 0)`
+- Add `nights: pool` to `calcTacticAvg`'s return value; render tactic nights list from `avg.nights`; add a test asserting that `avg.nights` contains exactly the tactic nights within the window (guards against filter regression)
 - Add the nights list block inside each tactic card's render, below the metrics grid and above the blurb toggle
 - The nights list uses the same `.nights-list`, `.nights-header`, `.night-row`, `.night-row-clickable` classes already used by the Baseline card — no new CSS needed
 - Baseline card: remove toggle-group JSX and the `[30, 60, 90].map(...)` block; the rest of the card is unchanged

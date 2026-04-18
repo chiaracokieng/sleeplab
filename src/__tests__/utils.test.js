@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { fmtMinutes, fmtBattery, calcBaseline, calcTacticAvg, calcWindowBaseline, filterExcluded, buildBaselineInput } from '../utils'
+import { fmtMinutes, fmtBattery, calcTacticAvg, calcWindowBaseline, filterExcluded } from '../utils'
 
 describe('filterExcluded', () => {
   it('removes nights with Excluded: true', () => {
@@ -17,30 +17,6 @@ describe('filterExcluded', () => {
   })
 })
 
-describe('buildBaselineInput', () => {
-  const night = (overrides = {}) => ({ 'Total Sleep': 420, Tactics: [], ...overrides })
-
-  it('returns analysisNights as-is when lastNight is not excluded', () => {
-    const lastNight = night()
-    const analysisNights = [lastNight, night(), night()]
-    expect(buildBaselineInput(lastNight, analysisNights)).toBe(analysisNights)
-  })
-
-  it('prepends lastNight when it is excluded so calcBaseline slice(1) skips it correctly', () => {
-    const lastNight = night({ Excluded: true })
-    const analysisNights = [night(), night()]
-    const result = buildBaselineInput(lastNight, analysisNights)
-    expect(result[0]).toBe(lastNight)
-    expect(result).toHaveLength(3)
-  })
-
-  it('excluded lastNight prepend does not affect calcBaseline output', () => {
-    const lastNight = night({ Excluded: true, 'Total Sleep': 999 })
-    const analysisNights = [night({ 'Total Sleep': 400 }), night({ 'Total Sleep': 500 })]
-    const result = calcBaseline(buildBaselineInput(lastNight, analysisNights), 30)
-    expect(result.totalSleep).toBe(450)
-  })
-})
 
 describe('fmtMinutes', () => {
   it('formats whole hours', () => {
@@ -160,6 +136,15 @@ describe('calcTacticAvg', () => {
     const result = calcTacticAvg(nights, 'Mouth tape', 30)
     expect(result.count).toBe(2)
   })
+
+  it('nights contains exactly the tactic nights within the window', () => {
+    const n1 = night({ Tactics: ['Mouth tape'], 'Total Sleep': 400 })
+    const n2 = night({ Tactics: [] })
+    const n3 = night({ Tactics: ['Mouth tape'], 'Total Sleep': 500 })
+    const outOfWindow = night({ Tactics: ['Mouth tape'], 'Total Sleep': 600 })
+    const result = calcTacticAvg([n1, n2, n3, outOfWindow], 'Mouth tape', 3)
+    expect(result.nights).toEqual([n1, n3])
+  })
 })
 
 describe('calcWindowBaseline', () => {
@@ -207,87 +192,3 @@ describe('calcWindowBaseline', () => {
   })
 })
 
-describe('calcBaseline', () => {
-  const night = (overrides = {}) => ({
-    'Total Sleep': 420,
-    'Deep Sleep': 90,
-    'REM Sleep': 100,
-    'Body Battery Change': 10,
-    Tactics: [],
-    ...overrides,
-  })
-
-  it('returns null when no tactic-free nights exist (excluding last night)', () => {
-    const nights = [
-      night({ Tactics: ['Mouth tape'] }),
-      night({ Tactics: ['Cold room'] }),
-    ]
-    expect(calcBaseline(nights, 30)).toBeNull()
-  })
-
-  it('excludes nights[0] (last night) from baseline', () => {
-    const lastNight = night({ 'Total Sleep': 999 })
-    const baselineNight = night({ 'Total Sleep': 400 })
-    const result = calcBaseline([lastNight, baselineNight], 30)
-    expect(result.totalSleep).toBe(400)
-  })
-
-  it('excludes nights with any tactics', () => {
-    const nights = [
-      night(),
-      night({ Tactics: ['Mouth tape'], 'Total Sleep': 999 }),
-      night({ 'Total Sleep': 300 }),
-    ]
-    const result = calcBaseline(nights, 30)
-    expect(result.totalSleep).toBe(300)
-  })
-
-  it('respects sampleSize cap', () => {
-    const nights = [
-      night(),
-      night({ 'Total Sleep': 300 }),
-      night({ 'Total Sleep': 400 }),
-      night({ 'Total Sleep': 500 }),
-    ]
-    const result = calcBaseline(nights, 2)
-    expect(result.count).toBe(2)
-    expect(result.totalSleep).toBe(350)
-  })
-
-  it('rounds averages to nearest integer', () => {
-    const nights = [
-      night(),
-      night({ 'Total Sleep': 361 }),
-      night({ 'Total Sleep': 362 }),
-    ]
-    const result = calcBaseline(nights, 30)
-    expect(result.totalSleep).toBe(362)
-  })
-
-  it('handles missing fields gracefully — returns null for that metric', () => {
-    const nights = [
-      night(),
-      night({ 'Deep Sleep': null }),
-      night({ 'Deep Sleep': null }),
-    ]
-    const result = calcBaseline(nights, 30)
-    expect(result.deepSleep).toBeNull()
-  })
-
-  it('averages only nights that have a value for each metric independently', () => {
-    const nights = [
-      night(),
-      night({ 'Deep Sleep': 60, 'REM Sleep': null }),
-      night({ 'Deep Sleep': null, 'REM Sleep': 80 }),
-    ]
-    const result = calcBaseline(nights, 30)
-    expect(result.deepSleep).toBe(60)
-    expect(result.remSleep).toBe(80)
-  })
-
-  it('returns correct count', () => {
-    const nights = [night(), night(), night(), night()]
-    const result = calcBaseline(nights, 30)
-    expect(result.count).toBe(3)
-  })
-})

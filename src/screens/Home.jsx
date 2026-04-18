@@ -89,15 +89,7 @@ export default function Home({ navigate }) {
         <div className="card-header">
           <span className="card-label">Last Night</span>
           <div className="card-header-right">
-            {lastNight.Excluded && (
-              <span
-                className="excluded-badge"
-                title={lastNight.Confounders?.length
-                  ? `Excluded: ${lastNight.Confounders.join(', ')}`
-                  : 'Manually excluded from analysis'}
-              >EXCLUDED</span>
-            )}
-            <span className="card-date">{fmtDate(lastNight.Date)}</span>
+              <span className="card-date">{fmtDate(lastNight.Date)}</span>
             <button className="edit-btn" onClick={() => navigate('log', { editRecord: lastNight })}>Edit</button>
           </div>
         </div>
@@ -125,6 +117,12 @@ export default function Home({ navigate }) {
         </div>
         {lastNight.Tactics?.length > 0 && (
           <p className="card-tactics">{lastNight.Tactics.join(', ')}</p>
+        )}
+        {lastNight.Excluded && (
+          <p className="card-excluded">
+            Excluded from analysis
+            {lastNight.Confounders?.length > 0 && ` · ${lastNight.Confounders.join(', ')}`}
+          </p>
         )}
       </div>
 

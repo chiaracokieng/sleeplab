@@ -402,6 +402,27 @@
   color: var(--accent);
 }
 
+/* Tactic blurb */
+
+.blurb-toggle {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 11px;
+  padding: 0;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.card-blurb {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
 /* Excluded */
 
 .card-header-right {

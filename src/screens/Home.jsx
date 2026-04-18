@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { fetchNights } from '../airtable'
 import { fmtMinutes, fmtBattery, fmtDate, fmtDateShort, calcBaseline, calcWindowBaseline, calcTacticAvg, filterExcluded, buildBaselineInput } from '../utils'
+import { DEFAULT_TACTICS } from '../tactics'
 
 function Delta({ val, baselineVal, isMinutes, label = 'baseline' }) {
   const hasVal = val != null && val !== ''
@@ -31,6 +32,7 @@ export default function Home({ navigate }) {
   const [nights, setNights] = useState(null)
   const [error, setError] = useState(null)
   const [sampleSize, setSampleSize] = useState(30)
+  const [expandedTactics, setExpandedTactics] = useState(new Set())
 
   useEffect(() => {
     fetchNights()
@@ -119,36 +121,55 @@ export default function Home({ navigate }) {
         )}
       </div>
 
-      {tacticAvgs.map(({ name, avg }) => (
-        <div key={name} className="card">
-          <div className="card-header">
-            <span className="card-label">{name}</span>
-            <span className="card-subtitle">{avg.count === 1 ? '1 night so far' : `${avg.count} nights so far`}</span>
+      {tacticAvgs.map(({ name, avg }) => {
+        const tacticInfo = DEFAULT_TACTICS.find(t => t.name === name)
+        const expanded = expandedTactics.has(name)
+        const toggleExpand = () => setExpandedTactics(prev => {
+          const next = new Set(prev)
+          expanded ? next.delete(name) : next.add(name)
+          return next
+        })
+        return (
+          <div key={name} className="card">
+            <div className="card-header">
+              <div className="card-label-group">
+                <span className="card-label">{name}</span>
+                <span className="card-subtitle">{avg.count === 1 ? '1 night so far' : `${avg.count} nights so far`}</span>
+              </div>
+              {tacticInfo && (
+                <button className="blurb-toggle" onClick={toggleExpand} aria-expanded={expanded}>
+                  {expanded ? 'Hide' : 'How it works'}
+                </button>
+              )}
+            </div>
+            <div className="metrics">
+              <div className="metric">
+                <span className="metric-label">Total</span>
+                <span className="metric-value">{fmtMinutes(avg.totalSleep)}</span>
+                <Delta val={avg.totalSleep} baselineVal={tacticWindowBaseline?.totalSleep} isMinutes label="baseline" />
+              </div>
+              <div className="metric">
+                <span className="metric-label">Deep</span>
+                <span className="metric-value">{fmtMinutes(avg.deepSleep)}</span>
+                <Delta val={avg.deepSleep} baselineVal={tacticWindowBaseline?.deepSleep} isMinutes label="baseline" />
+              </div>
+              <div className="metric">
+                <span className="metric-label">REM</span>
+                <span className="metric-value">{fmtMinutes(avg.remSleep)}</span>
+                <Delta val={avg.remSleep} baselineVal={tacticWindowBaseline?.remSleep} isMinutes label="baseline" />
+              </div>
+              <div className="metric">
+                <span className="metric-label">Battery</span>
+                <span className="metric-value">{fmtBattery(avg.bodyBattery)}</span>
+                <Delta val={avg.bodyBattery} baselineVal={tacticWindowBaseline?.bodyBattery} isMinutes={false} label="baseline" />
+              </div>
+            </div>
+            {tacticInfo && expanded && (
+              <p className="card-blurb">{tacticInfo.blurb}</p>
+            )}
           </div>
-          <div className="metrics">
-            <div className="metric">
-              <span className="metric-label">Total</span>
-              <span className="metric-value">{fmtMinutes(avg.totalSleep)}</span>
-              <Delta val={avg.totalSleep} baselineVal={tacticWindowBaseline?.totalSleep} isMinutes label="baseline" />
-            </div>
-            <div className="metric">
-              <span className="metric-label">Deep</span>
-              <span className="metric-value">{fmtMinutes(avg.deepSleep)}</span>
-              <Delta val={avg.deepSleep} baselineVal={tacticWindowBaseline?.deepSleep} isMinutes label="baseline" />
-            </div>
-            <div className="metric">
-              <span className="metric-label">REM</span>
-              <span className="metric-value">{fmtMinutes(avg.remSleep)}</span>
-              <Delta val={avg.remSleep} baselineVal={tacticWindowBaseline?.remSleep} isMinutes label="baseline" />
-            </div>
-            <div className="metric">
-              <span className="metric-label">Battery</span>
-              <span className="metric-value">{fmtBattery(avg.bodyBattery)}</span>
-              <Delta val={avg.bodyBattery} baselineVal={tacticWindowBaseline?.bodyBattery} isMinutes={false} label="baseline" />
-            </div>
-          </div>
-        </div>
-      ))}
+        )
+      })}
 
       <div className="card">
         <div className="card-header">

@@ -54,15 +54,26 @@ export default function Home({ navigate }) {
   }
 
   const lastNight = nights[0]
-  const baseline = calcBaseline(nights, sampleSize)
-  const tacticFreeNights = nights.slice(1, sampleSize + 1)
+  const analysisNights = nights.filter(n => !n.Excluded)
+
+  // Prepend lastNight so calcBaseline's slice(1) correctly skips it even when it's excluded
+  // (and therefore absent from analysisNights). Without this, slice(1) would drop a valid
+  // non-excluded night instead.
+  const baselineInput = lastNight.Excluded
+    ? [lastNight, ...analysisNights]
+    : analysisNights
+  const baseline = calcBaseline(baselineInput, sampleSize)
+
+  const tacticFreeNights = analysisNights
+    .filter(n => n !== lastNight)
+    .slice(0, sampleSize)
     .filter(n => !n.Tactics || n.Tactics.length === 0)
 
-  const windowNights = nights.slice(0, sampleSize)
-  const tacticWindowBaseline = calcWindowBaseline(nights, sampleSize)
+  const windowNights = analysisNights.slice(0, sampleSize)
+  const tacticWindowBaseline = calcWindowBaseline(analysisNights, sampleSize)
   const tacticNames = [...new Set(windowNights.flatMap(n => n.Tactics ?? []))]
   const tacticAvgs = tacticNames
-    .map(name => ({ name, avg: calcTacticAvg(nights, name, sampleSize) }))
+    .map(name => ({ name, avg: calcTacticAvg(analysisNights, name, sampleSize) }))
     .filter(t => t.avg !== null)
     .sort((a, b) => b.avg.count - a.avg.count)
 
@@ -77,8 +88,18 @@ export default function Home({ navigate }) {
       <div className="card">
         <div className="card-header">
           <span className="card-label">Last Night</span>
-          <span className="card-date">{fmtDate(lastNight.Date)}</span>
-          <button className="edit-btn" onClick={() => navigate('log', { editRecord: lastNight })}>Edit</button>
+          <div className="card-header-right">
+            {lastNight.Excluded && (
+              <span
+                className="excluded-badge"
+                title={lastNight.Confounders?.length
+                  ? `Excluded: ${lastNight.Confounders.join(', ')}`
+                  : 'Manually excluded from analysis'}
+              >EXCLUDED</span>
+            )}
+            <span className="card-date">{fmtDate(lastNight.Date)}</span>
+            <button className="edit-btn" onClick={() => navigate('log', { editRecord: lastNight })}>Edit</button>
+          </div>
         </div>
         <div className="metrics">
           <div className="metric">

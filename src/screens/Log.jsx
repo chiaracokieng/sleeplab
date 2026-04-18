@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { saveNight, updateNight } from '../airtable'
 import { TACTIC_NAMES } from '../tactics'
+import { CONFOUNDER_NAMES } from '../confounders'
 
 const CUSTOM_KEY = 'sleeplab_custom_tactics'
 
@@ -29,6 +30,8 @@ export default function Log({ navigate, editRecord }) {
       remSleepM: '',
       bodyBattery: '',
       tactics: [],
+      confounders: [],
+      excluded: false,
       notes: '',
     }
     return {
@@ -41,6 +44,8 @@ export default function Log({ navigate, editRecord }) {
       remSleepM:   String((editRecord['REM Sleep']   ?? 0) % 60),
       bodyBattery: editRecord['Body Battery Change'] ?? '',
       tactics:     editRecord.Tactics ?? [],
+      confounders: editRecord.Confounders ?? [],
+      excluded:    editRecord.Excluded ?? false,
       notes:       editRecord.Notes ?? '',
     }
   })
@@ -60,6 +65,19 @@ export default function Log({ navigate, editRecord }) {
     }))
   }
 
+  function toggleConfounder(c) {
+    setForm(f => {
+      const confounders = f.confounders.includes(c)
+        ? f.confounders.filter(x => x !== c)
+        : [...f.confounders, c]
+      return {
+        ...f,
+        confounders,
+        excluded: confounders.length > 0 ? f.excluded : false,
+      }
+    })
+  }
+
   function addCustomTactic() {
     const t = newTactic.trim()
     if (!t || allTactics.includes(t)) return
@@ -73,13 +91,16 @@ export default function Log({ navigate, editRecord }) {
     setSaving(true)
     setError(null)
     try {
+      const effectiveExcluded = form.confounders.length > 0 || form.excluded
       const fields = {
         Date: form.date,
         'Total Sleep': parseInt(form.totalSleepH || 0) * 60 + parseInt(form.totalSleepM || 0),
         'Deep Sleep': parseInt(form.deepSleepH || 0) * 60 + parseInt(form.deepSleepM || 0),
         'REM Sleep': parseInt(form.remSleepH || 0) * 60 + parseInt(form.remSleepM || 0),
         Tactics: form.tactics,
+        Excluded: effectiveExcluded,
       }
+      fields.Confounders = form.confounders
       if (form.bodyBattery !== '') fields['Body Battery Change'] = parseInt(form.bodyBattery)
       if (form.notes.trim()) fields.Notes = form.notes.trim()
       if (editRecord) {
@@ -171,6 +192,29 @@ export default function Log({ navigate, editRecord }) {
           />
           <button onClick={addCustomTactic}>Add</button>
         </div>
+      </div>
+
+      <div className="form-group">
+        <label>Unusual circumstances <span className="optional">(optional)</span></label>
+        <div className="chips">
+          {CONFOUNDER_NAMES.map(c => (
+            <button
+              key={c}
+              className={`chip${form.confounders.includes(c) ? ' active' : ''}`}
+              onClick={() => toggleConfounder(c)}
+            >{c}</button>
+          ))}
+        </div>
+        {form.confounders.length === 0 && (
+          <label className="excluded-checkbox">
+            <input
+              type="checkbox"
+              checked={form.excluded}
+              onChange={e => setForm(f => ({ ...f, excluded: e.target.checked }))}
+            />
+            <span>Exclude from experiments</span>
+          </label>
+        )}
       </div>
 
       <div className="form-group">

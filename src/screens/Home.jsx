@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { fetchNights } from '../airtable'
 import { fmtMinutes, fmtBattery, fmtDate, fmtDateShort, calcBaseline, calcWindowBaseline, calcTacticAvg } from '../utils'
 
-function Delta({ val, baselineVal, isMinutes, label = 'avg' }) {
+function Delta({ val, baselineVal, isMinutes, label = 'baseline' }) {
   const hasVal = val != null && val !== ''
   const hasBaseline = baselineVal != null
   if (!hasVal || !hasBaseline) {
@@ -84,22 +84,22 @@ export default function Home({ navigate }) {
           <div className="metric">
             <span className="metric-label">Total</span>
             <span className="metric-value">{fmtMinutes(lastNight['Total Sleep'])}</span>
-            <Delta val={lastNight['Total Sleep']} baselineVal={baseline?.totalSleep} isMinutes />
+            <Delta val={lastNight['Total Sleep']} baselineVal={baseline?.totalSleep} isMinutes label="baseline" />
           </div>
           <div className="metric">
             <span className="metric-label">Deep</span>
             <span className="metric-value">{fmtMinutes(lastNight['Deep Sleep'])}</span>
-            <Delta val={lastNight['Deep Sleep']} baselineVal={baseline?.deepSleep} isMinutes />
+            <Delta val={lastNight['Deep Sleep']} baselineVal={baseline?.deepSleep} isMinutes label="baseline" />
           </div>
           <div className="metric">
             <span className="metric-label">REM</span>
             <span className="metric-value">{fmtMinutes(lastNight['REM Sleep'])}</span>
-            <Delta val={lastNight['REM Sleep']} baselineVal={baseline?.remSleep} isMinutes />
+            <Delta val={lastNight['REM Sleep']} baselineVal={baseline?.remSleep} isMinutes label="baseline" />
           </div>
           <div className="metric">
             <span className="metric-label">Battery</span>
             <span className="metric-value">{fmtBattery(lastNight['Body Battery Change'])}</span>
-            <Delta val={lastBattery} baselineVal={baseline?.bodyBattery} isMinutes={false} />
+            <Delta val={lastBattery} baselineVal={baseline?.bodyBattery} isMinutes={false} label="baseline" />
           </div>
         </div>
         {lastNight.Tactics?.length > 0 && (

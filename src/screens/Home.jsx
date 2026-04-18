@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { fetchNights } from '../airtable'
-import { fmtMinutes, fmtBattery, fmtDate, fmtDateShort, calcBaseline, calcWindowBaseline, calcTacticAvg, filterExcluded, buildBaselineInput } from '../utils'
+import { fmtMinutes, fmtBattery, fmtDate, fmtDateShort, calcWindowBaseline, calcTacticAvg, filterExcluded } from '../utils'
 import { DEFAULT_TACTICS } from '../tactics'
 
 function Delta({ val, baselineVal, isMinutes, label = 'baseline' }) {
@@ -31,7 +31,6 @@ function Delta({ val, baselineVal, isMinutes, label = 'baseline' }) {
 export default function Home({ navigate }) {
   const [nights, setNights] = useState(null)
   const [error, setError] = useState(null)
-  const [sampleSize, setSampleSize] = useState(30)
   const [expandedTactics, setExpandedTactics] = useState(new Set())
 
   useEffect(() => {
@@ -57,18 +56,11 @@ export default function Home({ navigate }) {
 
   const lastNight = nights[0]
   const analysisNights = filterExcluded(nights)
-  const baseline = calcBaseline(buildBaselineInput(lastNight, analysisNights), sampleSize)
-
-  const tacticFreeNights = analysisNights
-    .filter(n => n !== lastNight)
-    .slice(0, sampleSize)
-    .filter(n => !n.Tactics || n.Tactics.length === 0)
-
-  const windowNights = analysisNights.slice(0, sampleSize)
-  const tacticWindowBaseline = calcWindowBaseline(analysisNights, sampleSize)
-  const tacticNames = [...new Set(windowNights.flatMap(n => n.Tactics ?? []))]
+  const baseline = calcWindowBaseline(analysisNights, 30)
+  const baselineNights = analysisNights.slice(0, 30).filter(n => (!n.Tactics || n.Tactics.length === 0) && n['Total Sleep'] != null && n['Total Sleep'] !== '')
+  const tacticNames = [...new Set(analysisNights.slice(0, 30).flatMap(n => n.Tactics ?? []))]
   const tacticAvgs = tacticNames
-    .map(name => ({ name, avg: calcTacticAvg(analysisNights, name, sampleSize) }))
+    .map(name => ({ name, avg: calcTacticAvg(analysisNights, name, 30) }))
     .filter(t => t.avg !== null)
     .sort((a, b) => b.avg.count - a.avg.count)
 
@@ -140,23 +132,43 @@ export default function Home({ navigate }) {
               <div className="metric">
                 <span className="metric-label">Total</span>
                 <span className="metric-value">{fmtMinutes(avg.totalSleep)}</span>
-                <Delta val={avg.totalSleep} baselineVal={tacticWindowBaseline?.totalSleep} isMinutes label="baseline" />
+                <Delta val={avg.totalSleep} baselineVal={baseline?.totalSleep} isMinutes label="baseline" />
               </div>
               <div className="metric">
                 <span className="metric-label">Deep</span>
                 <span className="metric-value">{fmtMinutes(avg.deepSleep)}</span>
-                <Delta val={avg.deepSleep} baselineVal={tacticWindowBaseline?.deepSleep} isMinutes label="baseline" />
+                <Delta val={avg.deepSleep} baselineVal={baseline?.deepSleep} isMinutes label="baseline" />
               </div>
               <div className="metric">
                 <span className="metric-label">REM</span>
                 <span className="metric-value">{fmtMinutes(avg.remSleep)}</span>
-                <Delta val={avg.remSleep} baselineVal={tacticWindowBaseline?.remSleep} isMinutes label="baseline" />
+                <Delta val={avg.remSleep} baselineVal={baseline?.remSleep} isMinutes label="baseline" />
               </div>
               <div className="metric">
                 <span className="metric-label">Battery</span>
                 <span className="metric-value">{fmtBattery(avg.bodyBattery)}</span>
-                <Delta val={avg.bodyBattery} baselineVal={tacticWindowBaseline?.bodyBattery} isMinutes={false} label="baseline" />
+                <Delta val={avg.bodyBattery} baselineVal={baseline?.bodyBattery} isMinutes={false} label="baseline" />
               </div>
+            </div>
+            <div className="nights-list">
+              <div className="nights-header">
+                <span></span>
+                <span>Total</span>
+                <span>Deep</span>
+                <span>REM</span>
+                <span>Bat</span>
+              </div>
+              {avg.nights.map(n => (
+                <div key={n.Date} className="night-row night-row-clickable" onClick={() => navigate('log', { editRecord: n })}>
+                  <div className="night-row-main">
+                    <span className="night-date">{fmtDateShort(n.Date)}</span>
+                    <span className="night-metric-val">{fmtMinutes(n['Total Sleep'])}</span>
+                    <span className="night-metric-val">{fmtMinutes(n['Deep Sleep'])}</span>
+                    <span className="night-metric-val">{fmtMinutes(n['REM Sleep'])}</span>
+                    <span className="night-metric-val">{fmtBattery(n['Body Battery Change'])}</span>
+                  </div>
+                </div>
+              ))}
             </div>
             {tacticInfo && expanded && (
               <p className="card-blurb">{tacticInfo.blurb}</p>
@@ -174,19 +186,10 @@ export default function Home({ navigate }) {
         <div className="card-header">
           <div className="card-label-group">
             <span className="card-label">Baseline</span>
-            <span className="card-subtitle">tactic-free nights</span>
-          </div>
-          <div className="toggle-group">
-            {[30, 60, 90].map(n => (
-              <button
-                key={n}
-                className={`toggle-btn${sampleSize === n ? ' active' : ''}`}
-                onClick={() => setSampleSize(n)}
-              >{n}</button>
-            ))}
+            <span className="card-subtitle">no tactics · {baselineNights.length} {baselineNights.length === 1 ? 'night' : 'nights'} · last 30</span>
           </div>
         </div>
-        {tacticFreeNights.length === 0 ? (
+        {baselineNights.length === 0 ? (
           <p className="card-empty">No tactic-free nights yet</p>
         ) : (
           <>
@@ -205,7 +208,7 @@ export default function Home({ navigate }) {
                 <span>REM</span>
                 <span>Bat</span>
               </div>
-              {tacticFreeNights.map(n => (
+              {baselineNights.map(n => (
                 <div key={n.Date} className="night-row night-row-clickable" onClick={() => navigate('log', { editRecord: n })}>
                   <div className="night-row-main">
                     <span className="night-date">{fmtDateShort(n.Date)}</span>

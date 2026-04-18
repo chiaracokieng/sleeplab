@@ -23,10 +23,9 @@ export function fmtDateShort(dateStr) {
 }
 
 export function calcWindowBaseline(nights, sampleSize) {
-  const pool = nights.slice(0, sampleSize).filter(n => !n.Tactics || n.Tactics.length === 0)
-  if (pool.length === 0) return null
-
   const hasVal = v => v != null && v !== ''
+  const pool = nights.slice(0, sampleSize).filter(n => (!n.Tactics || n.Tactics.length === 0) && hasVal(n['Total Sleep']))
+  if (pool.length === 0) return null
   const avg = arr => arr.length === 0 ? null : Math.round(arr.reduce((a, b) => a + b, 0) / arr.length)
 
   return {
@@ -47,6 +46,7 @@ export function calcTacticAvg(nights, tacticName, sampleSize) {
 
   return {
     count: pool.length,
+    nights: pool,
     totalSleep: avg(pool.filter(n => hasVal(n['Total Sleep'])).map(n => n['Total Sleep'])),
     deepSleep: avg(pool.filter(n => hasVal(n['Deep Sleep'])).map(n => n['Deep Sleep'])),
     remSleep: avg(pool.filter(n => hasVal(n['REM Sleep'])).map(n => n['REM Sleep'])),
@@ -56,30 +56,4 @@ export function calcTacticAvg(nights, tacticName, sampleSize) {
 
 export function filterExcluded(nights) {
   return nights.filter(n => !n.Excluded)
-}
-
-export function buildBaselineInput(lastNight, analysisNights) {
-  // calcBaseline skips nights[0] via slice(1). If lastNight was excluded it won't be in
-  // analysisNights, so we prepend it to keep the skip-first-night contract intact.
-  return lastNight.Excluded ? [lastNight, ...analysisNights] : analysisNights
-}
-
-export function calcBaseline(nights, sampleSize) {
-  // sampleSize = total nights scanned (not tactic-free nights counted). This keeps the baseline
-  // and tactic averages on the same time window so deltas are a valid comparison. E.g. with
-  // sampleSize=30, both baseline and tactic avg draw only from the last 30 logged nights.
-  // nights[0] (last night) is excluded to avoid self-reference in the Last Night delta.
-  const pool = nights.slice(1, sampleSize + 1).filter(n => !n.Tactics || n.Tactics.length === 0)
-  if (pool.length === 0) return null
-
-  const hasVal = v => v != null && v !== ''
-  const avg = arr => arr.length === 0 ? null : Math.round(arr.reduce((a, b) => a + b, 0) / arr.length)
-
-  return {
-    count: pool.length,
-    totalSleep: avg(pool.filter(n => hasVal(n['Total Sleep'])).map(n => n['Total Sleep'])),
-    deepSleep: avg(pool.filter(n => hasVal(n['Deep Sleep'])).map(n => n['Deep Sleep'])),
-    remSleep: avg(pool.filter(n => hasVal(n['REM Sleep'])).map(n => n['REM Sleep'])),
-    bodyBattery: avg(pool.filter(n => hasVal(n['Body Battery Change'])).map(n => n['Body Battery Change'])),
-  }
 }

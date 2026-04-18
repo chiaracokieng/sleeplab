@@ -44,7 +44,7 @@ export default function Home({ navigate }) {
   if (nights.length === 0) {
     return (
       <div className="screen">
-        <h1 className="app-title">Sleep Lab</h1>
+        <h1 className="app-title">🌙 Sleep Lab</h1>
         <div className="empty-state">
           <p>Enter your last 7 nights to establish your baseline.</p>
           <button className="primary-btn" onClick={() => navigate('log')}>Log last night</button>
@@ -76,7 +76,7 @@ export default function Home({ navigate }) {
 
   return (
     <div className="screen">
-      <h1 className="app-title">Sleep Lab</h1>
+      <h1 className="app-title">🌙 Sleep Lab</h1>
 
       <div className="card">
         <div className="card-header">

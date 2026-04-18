@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { fetchNights } from '../airtable'
-import { fmtMinutes, fmtBattery, fmtDate, fmtDateShort, calcBaseline, calcWindowBaseline, calcTacticAvg } from '../utils'
+import { fmtMinutes, fmtBattery, fmtDate, fmtDateShort, calcBaseline, calcWindowBaseline, calcTacticAvg, filterExcluded, buildBaselineInput } from '../utils'
 
 function Delta({ val, baselineVal, isMinutes, label = 'baseline' }) {
   const hasVal = val != null && val !== ''
@@ -54,15 +54,8 @@ export default function Home({ navigate }) {
   }
 
   const lastNight = nights[0]
-  const analysisNights = nights.filter(n => !n.Excluded)
-
-  // Prepend lastNight so calcBaseline's slice(1) correctly skips it even when it's excluded
-  // (and therefore absent from analysisNights). Without this, slice(1) would drop a valid
-  // non-excluded night instead.
-  const baselineInput = lastNight.Excluded
-    ? [lastNight, ...analysisNights]
-    : analysisNights
-  const baseline = calcBaseline(baselineInput, sampleSize)
+  const analysisNights = filterExcluded(nights)
+  const baseline = calcBaseline(buildBaselineInput(lastNight, analysisNights), sampleSize)
 
   const tacticFreeNights = analysisNights
     .filter(n => n !== lastNight)
@@ -89,7 +82,7 @@ export default function Home({ navigate }) {
         <div className="card-header">
           <span className="card-label">Last Night</span>
           <div className="card-header-right">
-              <span className="card-date">{fmtDate(lastNight.Date)}</span>
+            <span className="card-date">{fmtDate(lastNight.Date)}</span>
             <button className="edit-btn" onClick={() => navigate('log', { editRecord: lastNight })}>Edit</button>
           </div>
         </div>

@@ -22,6 +22,8 @@ All testable logic extracted here and covered in `src/__tests__/utils.test.js`.
 | `fmtMinutes` | whole hours, hours+minutes, sub-hour, null, empty string |
 | `fmtBattery` | positive, zero, negative, null, empty string |
 | `calcBaseline` | excludes nights[0], excludes tactic nights, sampleSize cap, rounding, missing fields, independent per-metric averaging, correct count |
+| `filterExcluded` | removes `Excluded: true` nights, keeps nights with no field, empty result |
+| `buildBaselineInput` | passthrough when lastNight not excluded, prepend when excluded, excluded-lastNight baseline correctness |
 
 ## What we don't test
 

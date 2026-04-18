@@ -54,6 +54,16 @@ export function calcTacticAvg(nights, tacticName, sampleSize) {
   }
 }
 
+export function filterExcluded(nights) {
+  return nights.filter(n => !n.Excluded)
+}
+
+export function buildBaselineInput(lastNight, analysisNights) {
+  // calcBaseline skips nights[0] via slice(1). If lastNight was excluded it won't be in
+  // analysisNights, so we prepend it to keep the skip-first-night contract intact.
+  return lastNight.Excluded ? [lastNight, ...analysisNights] : analysisNights
+}
+
 export function calcBaseline(nights, sampleSize) {
   // sampleSize = total nights scanned (not tactic-free nights counted). This keeps the baseline
   // and tactic averages on the same time window so deltas are a valid comparison. E.g. with

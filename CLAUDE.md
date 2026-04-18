@@ -33,6 +33,7 @@ The core question: **How does doing X change my sleep quality?**
 src/
   airtable.js       — fetchNights() and saveNight(fields); handles Airtable pagination
   tactics.js        — DEFAULT_TACTICS (objects with name, impact, doability, blurb, source) + TACTIC_NAMES (string array)
+  confounders.js    — CONFOUNDER_NAMES (string array)
   screens/
     Home.jsx        — Last Night card + Baseline card with 7/30/90 toggle
     Log.jsx         — Entry form; custom tactics persisted to localStorage
@@ -58,6 +59,8 @@ docs/
 | REM Sleep | Number | Minutes |
 | Body Battery Change | Number | Signed integer; user types `-` explicitly |
 | Tactics | Multiple select | Options match `DEFAULT_TACTICS` in `tactics.js` |
+| Confounders | Multiple select | Options match `CONFOUNDER_NAMES` in `confounders.js` |
+| Excluded | Checkbox | True when confounders selected or manually checked; night omitted from all analysis |
 | Notes | Long text | Optional |
 
 **Baseline** = average of nights with no tactics selected, within the chosen time window (7 / 30 / 90 days).

@@ -1,5 +1,46 @@
 import { describe, it, expect } from 'vitest'
-import { fmtMinutes, fmtBattery, calcBaseline, calcTacticAvg, calcWindowBaseline } from '../utils'
+import { fmtMinutes, fmtBattery, calcBaseline, calcTacticAvg, calcWindowBaseline, filterExcluded, buildBaselineInput } from '../utils'
+
+describe('filterExcluded', () => {
+  it('removes nights with Excluded: true', () => {
+    const nights = [{ Excluded: false }, { Excluded: true }, { Excluded: false }]
+    expect(filterExcluded(nights)).toHaveLength(2)
+  })
+
+  it('keeps nights with no Excluded field', () => {
+    const nights = [{}, { Excluded: true }, {}]
+    expect(filterExcluded(nights)).toHaveLength(2)
+  })
+
+  it('returns empty array when all nights are excluded', () => {
+    expect(filterExcluded([{ Excluded: true }])).toHaveLength(0)
+  })
+})
+
+describe('buildBaselineInput', () => {
+  const night = (overrides = {}) => ({ 'Total Sleep': 420, Tactics: [], ...overrides })
+
+  it('returns analysisNights as-is when lastNight is not excluded', () => {
+    const lastNight = night()
+    const analysisNights = [lastNight, night(), night()]
+    expect(buildBaselineInput(lastNight, analysisNights)).toBe(analysisNights)
+  })
+
+  it('prepends lastNight when it is excluded so calcBaseline slice(1) skips it correctly', () => {
+    const lastNight = night({ Excluded: true })
+    const analysisNights = [night(), night()]
+    const result = buildBaselineInput(lastNight, analysisNights)
+    expect(result[0]).toBe(lastNight)
+    expect(result).toHaveLength(3)
+  })
+
+  it('excluded lastNight prepend does not affect calcBaseline output', () => {
+    const lastNight = night({ Excluded: true, 'Total Sleep': 999 })
+    const analysisNights = [night({ 'Total Sleep': 400 }), night({ 'Total Sleep': 500 })]
+    const result = calcBaseline(buildBaselineInput(lastNight, analysisNights), 30)
+    expect(result.totalSleep).toBe(450)
+  })
+})
 
 describe('fmtMinutes', () => {
   it('formats whole hours', () => {

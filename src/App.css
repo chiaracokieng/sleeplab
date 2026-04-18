@@ -29,6 +29,15 @@
   cursor: pointer;
 }
 
+.edit-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  padding: 0;
+  cursor: pointer;
+}
+
 /* Cards */
 
 .card {

@@ -372,6 +372,67 @@
     padding-left: 6px;
     margin-left: -6px;
   }
+
+  &.night-row-clickable {
+    cursor: pointer;
+
+    &:hover {
+      background: var(--border);
+    }
+  }
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 10px 0;
+  opacity: 0.5;
+  width: 100%;
+  text-align: center;
+
+  &:hover {
+    opacity: 1;
+    color: #c0392b;
+  }
+}
+
+.delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.delete-confirm-btn {
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+.delete-cancel-btn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .night-date {

@@ -207,7 +207,7 @@ export default function Home({ navigate }) {
                 <span>Bat</span>
               </div>
               {tacticFreeNights.map(n => (
-                <div key={n.Date} className="night-row">
+                <div key={n.Date} className="night-row night-row-clickable" onClick={() => navigate('log', { editRecord: n })}>
                   <div className="night-row-main">
                     <span className="night-date">{fmtDateShort(n.Date)}</span>
                     <span className="night-metric-val">{fmtMinutes(n['Total Sleep'])}</span>

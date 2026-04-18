@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { saveNight, updateNight } from '../airtable'
+import { saveNight, updateNight, deleteNight } from '../airtable'
 import { TACTIC_NAMES } from '../tactics'
 import { CONFOUNDER_NAMES } from '../confounders'
 
@@ -53,6 +53,8 @@ export default function Log({ navigate, editRecord }) {
   const [newTactic, setNewTactic] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   const allTactics = [...TACTIC_NAMES, ...customTactics]
 
@@ -87,6 +89,19 @@ export default function Log({ navigate, editRecord }) {
     setNewTactic('')
   }
 
+  async function handleDelete() {
+    setDeleting(true)
+    setError(null)
+    try {
+      await deleteNight(editRecord.id)
+      navigate('home')
+    } catch (e) {
+      setError(e.message)
+      setDeleting(false)
+      setConfirmDelete(false)
+    }
+  }
+
   async function handleSave() {
     setSaving(true)
     setError(null)
@@ -119,7 +134,7 @@ export default function Log({ navigate, editRecord }) {
     <div className="screen">
       <div className="screen-header">
         <button className="back-btn" onClick={() => navigate('home')}>← Back</button>
-        <h1 className="app-title">{editRecord ? 'Edit Last Night' : 'Log Last Night'}</h1>
+        <h1 className="app-title">{editRecord ? 'Edit Night' : 'Log Last Night'}</h1>
       </div>
 
       <div className="form-group">
@@ -229,9 +244,27 @@ export default function Log({ navigate, editRecord }) {
 
       {error && <p className="error">{error}</p>}
 
-      <button className="primary-btn" onClick={handleSave} disabled={saving}>
+      <button className="primary-btn" onClick={handleSave} disabled={saving || deleting}>
         {saving ? (editRecord ? 'Updating…' : 'Saving…') : (editRecord ? 'Update' : 'Save')}
       </button>
+
+      {editRecord && (
+        confirmDelete ? (
+          <div className="delete-confirm">
+            <span>Delete this night permanently?</span>
+            <button className="delete-confirm-btn" onClick={handleDelete} disabled={deleting}>
+              {deleting ? 'Deleting…' : 'Yes, delete'}
+            </button>
+            <button className="delete-cancel-btn" onClick={() => setConfirmDelete(false)} disabled={deleting}>
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button className="delete-btn" onClick={() => setConfirmDelete(true)}>
+            Delete night
+          </button>
+        )
+      )}
     </div>
   )
 }

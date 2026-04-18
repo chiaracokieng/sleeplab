@@ -62,3 +62,12 @@ export async function updateNight(id, fields) {
   }
   return res.json()
 }
+
+export async function deleteNight(id) {
+  const res = await fetch(`${BASE_URL}/${id}`, { method: 'DELETE', headers })
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    const detail = body?.error?.message || body?.error?.type || ''
+    throw new Error(`Airtable error ${res.status}${detail ? ': ' + detail : ''}`)
+  }
+}

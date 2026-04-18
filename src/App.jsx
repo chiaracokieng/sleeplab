@@ -4,8 +4,12 @@ import Log from './screens/Log'
 import './App.css'
 
 export default function App() {
-  const [screen, setScreen] = useState('home')
+  const [{ screen, props }, setNav] = useState({ screen: 'home', props: {} })
 
-  if (screen === 'home') return <Home navigate={setScreen} />
-  if (screen === 'log') return <Log navigate={setScreen} />
+  function navigate(screen, props = {}) {
+    setNav({ screen, props })
+  }
+
+  if (screen === 'home') return <Home navigate={navigate} />
+  if (screen === 'log') return <Log navigate={navigate} {...props} />
 }

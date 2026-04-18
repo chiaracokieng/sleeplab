@@ -78,6 +78,7 @@ export default function Home({ navigate }) {
         <div className="card-header">
           <span className="card-label">Last Night</span>
           <span className="card-date">{fmtDate(lastNight.Date)}</span>
+          <button className="edit-btn" onClick={() => navigate('log', { editRecord: lastNight })}>Edit</button>
         </div>
         <div className="metrics">
           <div className="metric">

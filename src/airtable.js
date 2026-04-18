@@ -48,3 +48,17 @@ export async function saveNight(fields) {
   }
   return res.json()
 }
+
+export async function updateNight(id, fields) {
+  const res = await fetch(`${BASE_URL}/${id}`, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({ fields }),
+  })
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    const detail = body?.error?.message || body?.error?.type || ''
+    throw new Error(`Airtable error ${res.status}${detail ? ': ' + detail : ''}`)
+  }
+  return res.json()
+}

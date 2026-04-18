@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { saveNight } from '../airtable'
+import { saveNight, updateNight } from '../airtable'
 import { TACTIC_NAMES } from '../tactics'
 
 const CUSTOM_KEY = 'sleeplab_custom_tactics'
@@ -17,18 +17,32 @@ function loadCustomTactics() {
   }
 }
 
-export default function Log({ navigate }) {
-  const [form, setForm] = useState({
-    date: localToday(),
-    totalSleepH: '',
-    totalSleepM: '',
-    deepSleepH: '',
-    deepSleepM: '',
-    remSleepH: '',
-    remSleepM: '',
-    bodyBattery: '',
-    tactics: [],
-    notes: '',
+export default function Log({ navigate, editRecord }) {
+  const [form, setForm] = useState(() => {
+    if (!editRecord) return {
+      date: localToday(),
+      totalSleepH: '',
+      totalSleepM: '',
+      deepSleepH: '',
+      deepSleepM: '',
+      remSleepH: '',
+      remSleepM: '',
+      bodyBattery: '',
+      tactics: [],
+      notes: '',
+    }
+    return {
+      date: editRecord.Date,
+      totalSleepH: String(Math.floor((editRecord['Total Sleep'] ?? 0) / 60)),
+      totalSleepM: String((editRecord['Total Sleep'] ?? 0) % 60),
+      deepSleepH:  String(Math.floor((editRecord['Deep Sleep']  ?? 0) / 60)),
+      deepSleepM:  String((editRecord['Deep Sleep']  ?? 0) % 60),
+      remSleepH:   String(Math.floor((editRecord['REM Sleep']   ?? 0) / 60)),
+      remSleepM:   String((editRecord['REM Sleep']   ?? 0) % 60),
+      bodyBattery: editRecord['Body Battery Change'] ?? '',
+      tactics:     editRecord.Tactics ?? [],
+      notes:       editRecord.Notes ?? '',
+    }
   })
   const [customTactics, setCustomTactics] = useState(loadCustomTactics)
   const [newTactic, setNewTactic] = useState('')
@@ -68,7 +82,11 @@ export default function Log({ navigate }) {
       }
       if (form.bodyBattery !== '') fields['Body Battery Change'] = parseInt(form.bodyBattery)
       if (form.notes.trim()) fields.Notes = form.notes.trim()
-      await saveNight(fields)
+      if (editRecord) {
+        await updateNight(editRecord.id, fields)
+      } else {
+        await saveNight(fields)
+      }
       navigate('home')
     } catch (e) {
       setError(e.message)
@@ -80,7 +98,7 @@ export default function Log({ navigate }) {
     <div className="screen">
       <div className="screen-header">
         <button className="back-btn" onClick={() => navigate('home')}>← Back</button>
-        <h1 className="app-title">Log Last Night</h1>
+        <h1 className="app-title">{editRecord ? 'Edit Last Night' : 'Log Last Night'}</h1>
       </div>
 
       <div className="form-group">
@@ -168,7 +186,7 @@ export default function Log({ navigate }) {
       {error && <p className="error">{error}</p>}
 
       <button className="primary-btn" onClick={handleSave} disabled={saving}>
-        {saving ? 'Saving…' : 'Save'}
+        {saving ? (editRecord ? 'Updating…' : 'Saving…') : (editRecord ? 'Update' : 'Save')}
       </button>
     </div>
   )

@@ -25,8 +25,8 @@ export const DEFAULT_TACTICS = [
     doability: 3,
     blurb: 'Mouth breathing causes more snoring and micro-awakenings through the night. Nasal breathing reduces these interruptions, giving you more continuous sleep and more time in deep sleep.',
     source: 'Growing clinical evidence, Huberman Lab',
-    targetMetrics: ['deepSleep', 'bodyBattery'],
-    expectTimeline: 'Deep Sleep tends to move in the first week from fewer micro-awakenings; Body Battery follows.',
+    targetMetrics: ['deepSleep', 'totalSleep', 'bodyBattery'],
+    expectTimeline: 'Deep Sleep and Total Sleep improve in the first week — fewer micro-awakenings means less lost sleep time; Body Battery follows.',
   },
   {
     name: 'Caffeine cutoff',
@@ -34,8 +34,8 @@ export const DEFAULT_TACTICS = [
     doability: 2,
     blurb: 'Caffeine blocks adenosine receptors for up to 10 hours, reducing deep sleep even when you fall asleep without trouble.',
     source: 'Walker "Why We Sleep", multiple RCTs',
-    targetMetrics: ['deepSleep', 'remSleep'],
-    expectTimeline: 'Deep Sleep improves in the first week; REM typically continues improving over 2–3 weeks as adenosine sensitivity fully recovers.',
+    targetMetrics: ['deepSleep', 'remSleep', 'bodyBattery'],
+    expectTimeline: 'Deep Sleep and REM both improve within the first week once caffeine clears before bed; Body Battery follows.',
   },
   {
     name: 'Morning sunlight',
@@ -61,8 +61,8 @@ export const DEFAULT_TACTICS = [
     doability: 1,
     blurb: 'Anchors your circadian rhythm. Even one lie-in can delay your sleep phase by 1–2 hours, making it harder to fall asleep the following night.',
     source: 'CBT-I (core intervention), AASM',
-    targetMetrics: ['totalSleep', 'bodyBattery'],
-    expectTimeline: 'Total Sleep improves as you start falling asleep at your intended time more reliably (1–2 weeks); Body Battery improves as the clock locks in (2–4 weeks).',
+    targetMetrics: ['remSleep', 'totalSleep', 'bodyBattery'],
+    expectTimeline: 'REM Sleep improves as circadian anchoring puts your REM windows at the right time (1–2 weeks); Total Sleep follows as you fall asleep at your intended time more reliably; Body Battery improves as the clock locks in (2–4 weeks).',
   },
   {
     name: 'No alcohol',

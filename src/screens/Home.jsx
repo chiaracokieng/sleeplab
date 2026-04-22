@@ -185,9 +185,11 @@ export default function Home({ navigate }) {
                 {tacticInfo.targetMetrics?.length > 0 && (
                   <div className="expect-metrics">
                     <span className="expect-metrics-label">Targets</span>
-                    {tacticInfo.targetMetrics.map(k => (
-                      <span key={k} className="expect-metric-chip">{METRIC_LABELS[k]}</span>
-                    ))}
+                    <div className="expect-metrics-chips">
+                      {tacticInfo.targetMetrics.map(k => (
+                        <span key={k} className="expect-metric-chip">{METRIC_LABELS[k]}</span>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {tacticInfo.expectTimeline && (

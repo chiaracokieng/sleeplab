@@ -106,10 +106,10 @@ Each tactic has a fixed set of metrics it is most likely to move, based on the m
 |---|---|---|
 | Cold room | Deep Sleep, Total Sleep | Core temp drop accelerates sleep onset and deepens slow-wave sleep |
 | Blue blockers | Total Sleep, Body Battery | Earlier melatonin onset → earlier sleep onset → more total sleep and better recovery |
-| Mouth tape | Deep Sleep, Body Battery | Fewer micro-awakenings → more continuous sleep and deeper slow-wave |
-| Caffeine cutoff | Deep Sleep, REM Sleep | Adenosine block specifically suppresses deep and REM sleep |
+| Mouth tape | Deep Sleep, Total Sleep, Body Battery | Fewer micro-awakenings → more continuous sleep, less lost sleep time, and deeper slow-wave |
+| Caffeine cutoff | Deep Sleep, REM Sleep, Body Battery | Adenosine block suppresses deep and REM sleep; body battery improves downstream |
 | Morning sunlight | REM Sleep, Total Sleep, Body Battery | Anchors circadian rhythm → REM occurs at optimal phase → more REM, more consistent total sleep, and better recovery |
-| Consistent wake time | Total Sleep, Body Battery | Reduces sleep phase drift → more time asleep and better recovery |
+| Consistent wake time | REM Sleep, Total Sleep, Body Battery | Anchors circadian rhythm → REM at optimal phase, more consistent total sleep, and better recovery |
 | No alcohol | REM Sleep, Body Battery | Alcohol fragments the second half of the night and suppresses REM by up to 25% |
 
 ---

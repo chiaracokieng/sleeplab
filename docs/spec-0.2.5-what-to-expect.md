@@ -18,10 +18,10 @@ The "What to expect" toggle in each tactic card currently shows only the mechani
 |---|---|---|
 | Cold room | `['deepSleep', 'totalSleep']` | Deep Sleep often improves in the first week; Total Sleep follows as sleep onset shortens. |
 | Blue blockers | `['totalSleep', 'bodyBattery']` | Total Sleep improves in 1–2 weeks as melatonin timing shifts; Body Battery follows. |
-| Mouth tape | `['deepSleep', 'bodyBattery']` | Deep Sleep tends to move in the first week from fewer micro-awakenings; Body Battery follows. |
-| Caffeine cutoff | `['deepSleep', 'remSleep']` | Deep Sleep improves in the first week; REM typically continues improving over 2–3 weeks as adenosine sensitivity fully recovers. |
+| Mouth tape | `['deepSleep', 'totalSleep', 'bodyBattery']` | Deep Sleep and Total Sleep improve in the first week — fewer micro-awakenings means less lost sleep time; Body Battery follows. |
+| Caffeine cutoff | `['deepSleep', 'remSleep', 'bodyBattery']` | Deep Sleep and REM both improve within the first week once caffeine clears before bed; Body Battery follows. |
 | Morning sunlight | `['remSleep', 'totalSleep', 'bodyBattery']` | REM Sleep improves first (1–2 weeks) as circadian anchoring puts your REM windows at the right time in the night. Total Sleep and Body Battery follow as the clock locks in (2–4 weeks). |
-| Consistent wake time | `['totalSleep', 'bodyBattery']` | Total Sleep improves as you start falling asleep at your intended time more reliably (1–2 weeks); Body Battery improves as the clock locks in (2–4 weeks). |
+| Consistent wake time | `['remSleep', 'totalSleep', 'bodyBattery']` | REM Sleep improves as circadian anchoring puts your REM windows at the right time (1–2 weeks); Total Sleep follows as you fall asleep at your intended time more reliably; Body Battery improves as the clock locks in (2–4 weeks). |
 | No alcohol | `['remSleep', 'bodyBattery']` | REM recovers within the first week of abstinence; Body Battery follows. |
 | 528 Hz playlist | `['totalSleep', 'bodyBattery']` | Some randomized studies show faster sleep onset and better subjective sleep quality from bedtime music. Objective metrics (Deep Sleep, REM) are inconsistent across studies — watch Total Sleep and Body Battery over 2–3 weeks. |
 

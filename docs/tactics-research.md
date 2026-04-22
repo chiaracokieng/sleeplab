@@ -40,7 +40,7 @@ Impact rated medium (not high) because the effect size is real but moderate — 
 ### 3. Mouth tape
 **Impact: medium · Doability: high**
 
-Mouth breathing causes more snoring and micro-awakenings through the night. Nasal breathing reduces these interruptions, giving you more continuous sleep and more time in deep sleep.
+Mouth breathing causes more snoring and micro-awakenings through the night. Nasal breathing reduces these interruptions, giving you more continuous sleep, less lost sleep time (each micro-awakening is minutes off your total), and more time in deep sleep.
 
 Impact rated medium because evidence is growing but less robust than lifestyle interventions. Doability is high: passive once you get past the initial weirdness, which typically goes away after 2–3 nights.
 
@@ -51,7 +51,7 @@ Impact rated medium because evidence is growing but less robust than lifestyle i
 ### 4. Caffeine cutoff
 **Impact: high · Doability: medium**
 
-Caffeine blocks adenosine receptors for up to 10 hours, reducing deep sleep even when you fall asleep without trouble. Cutting off by early afternoon (typically 1–2pm) removes this interference.
+Caffeine blocks adenosine receptors for up to 10 hours, reducing deep sleep and REM even when you fall asleep without trouble. Moving the cutoff earlier means caffeine clears before bed — both deep sleep and REM improve within the first week, not gradually over weeks (that slower recovery applies to quitting caffeine entirely, not just shifting the cutoff time).
 
 Doability rated medium because afternoon coffee is deeply habitual for most people. Achievable, but requires consistent intention.
 
@@ -84,7 +84,7 @@ Doability is high: passive, zero friction, just press play. Impact is low becaus
 ### 6. Consistent wake time
 **Impact: high · Doability: low**
 
-Anchors your circadian rhythm. Even one lie-in can delay your sleep phase by 1–2 hours, making it harder to fall asleep the following night. This is a core intervention in CBT-I (Cognitive Behavioral Therapy for Insomnia), the gold standard clinical treatment for insomnia.
+Anchors your circadian rhythm — and by the same mechanism as morning sunlight, a well-anchored circadian clock improves REM timing and duration first, with total sleep and body battery following. Even one lie-in can delay your sleep phase by 1–2 hours, making it harder to fall asleep the following night. This is a core intervention in CBT-I (Cognitive Behavioral Therapy for Insomnia), the gold standard clinical treatment for insomnia.
 
 Doability rated low because it requires discipline every day including weekends. High failure rate in practice despite being one of the most evidence-backed interventions.
 

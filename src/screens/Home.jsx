@@ -117,6 +117,7 @@ export default function Home({ navigate }) {
             {lastNight.Confounders?.length > 0 && ` · ${lastNight.Confounders.join(', ')}`}
           </p>
         )}
+        {lastNight.Notes && <p className="night-note">{lastNight.Notes}</p>}
       </div>
 
       {tacticAvgs.map(({ name, avg }) => {
@@ -174,6 +175,7 @@ export default function Home({ navigate }) {
                     <span className="night-metric-val">{fmtMinutes(n['REM Sleep'])}</span>
                     <span className="night-metric-val">{fmtBattery(n['Body Battery Change'])}</span>
                   </div>
+                  {n.Notes && <p className="night-note">{n.Notes}</p>}
                 </div>
               ))}
             </div>
@@ -237,6 +239,7 @@ export default function Home({ navigate }) {
                     <span className="night-metric-val">{fmtMinutes(n['REM Sleep'])}</span>
                     <span className="night-metric-val">{fmtBattery(n['Body Battery Change'])}</span>
                   </div>
+                  {n.Notes && <p className="night-note">{n.Notes}</p>}
                 </div>
               ))}
             </div>

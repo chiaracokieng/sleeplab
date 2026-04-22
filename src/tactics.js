@@ -43,8 +43,8 @@ export const DEFAULT_TACTICS = [
     doability: 2,
     blurb: 'Triggers a morning cortisol pulse that anchors your circadian clock, making it easier to fall asleep at a consistent time.',
     source: 'Huberman Lab, circadian biology research',
-    targetMetrics: ['totalSleep', 'bodyBattery'],
-    expectTimeline: 'Body Battery improves first (1–2 weeks) as your nervous system starts recovering more efficiently. Total Sleep improves as you start falling asleep at your intended time more reliably (2–4 weeks).',
+    targetMetrics: ['remSleep', 'totalSleep', 'bodyBattery'],
+    expectTimeline: 'REM Sleep improves first (1–2 weeks) as circadian anchoring puts your REM windows at the right time in the night. Total Sleep and Body Battery follow as the clock locks in (2–4 weeks).',
   },
   {
     name: '528 Hz playlist',

@@ -20,7 +20,7 @@ The "What to expect" toggle in each tactic card currently shows only the mechani
 | Blue blockers | `['totalSleep', 'bodyBattery']` | Total Sleep improves in 1–2 weeks as melatonin timing shifts; Body Battery follows. |
 | Mouth tape | `['deepSleep', 'bodyBattery']` | Deep Sleep tends to move in the first week from fewer micro-awakenings; Body Battery follows. |
 | Caffeine cutoff | `['deepSleep', 'remSleep']` | Deep Sleep improves in the first week; REM typically continues improving over 2–3 weeks as adenosine sensitivity fully recovers. |
-| Morning sunlight | `['totalSleep', 'bodyBattery']` | Body Battery improves first (1–2 weeks) as your nervous system starts recovering more efficiently. Total Sleep improves as you start falling asleep at your intended time more reliably (2–4 weeks). |
+| Morning sunlight | `['remSleep', 'totalSleep', 'bodyBattery']` | REM Sleep improves first (1–2 weeks) as circadian anchoring puts your REM windows at the right time in the night. Total Sleep and Body Battery follow as the clock locks in (2–4 weeks). |
 | Consistent wake time | `['totalSleep', 'bodyBattery']` | Total Sleep improves as you start falling asleep at your intended time more reliably (1–2 weeks); Body Battery improves as the clock locks in (2–4 weeks). |
 | No alcohol | `['remSleep', 'bodyBattery']` | REM recovers within the first week of abstinence; Body Battery follows. |
 | 528 Hz playlist | `['totalSleep', 'bodyBattery']` | Some randomized studies show faster sleep onset and better subjective sleep quality from bedtime music. Objective metrics (Deep Sleep, REM) are inconsistent across studies — watch Total Sleep and Body Battery over 2–3 weeks. |

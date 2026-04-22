@@ -62,7 +62,7 @@ Doability rated medium because afternoon coffee is deeply habitual for most peop
 ### 5. Morning sunlight
 **Impact: high · Doability: medium**
 
-Triggers a morning cortisol pulse that anchors your circadian clock, making it easier to fall asleep at a consistent time at night. 10 minutes of outdoor light within an hour of waking is sufficient.
+Triggers a morning cortisol pulse that anchors your circadian clock. REM sleep is the stage most tightly regulated by the circadian system (Process C in the two-process model), so better clock anchoring directly improves how much REM you get and when it lands in the night. Total sleep and body battery recovery follow as downstream effects. 10 minutes of outdoor light within an hour of waking is sufficient.
 
 Doability rated medium because it requires going outside in the morning, which conflicts with indoor work routines and is weather-dependent.
 

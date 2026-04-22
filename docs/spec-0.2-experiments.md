@@ -108,7 +108,7 @@ Each tactic has a fixed set of metrics it is most likely to move, based on the m
 | Blue blockers | Total Sleep, Body Battery | Earlier melatonin onset → earlier sleep onset → more total sleep and better recovery |
 | Mouth tape | Deep Sleep, Body Battery | Fewer micro-awakenings → more continuous sleep and deeper slow-wave |
 | Caffeine cutoff | Deep Sleep, REM Sleep | Adenosine block specifically suppresses deep and REM sleep |
-| Morning sunlight | Total Sleep, Body Battery | Anchors circadian rhythm → more consistent sleep timing and recovery |
+| Morning sunlight | REM Sleep, Total Sleep, Body Battery | Anchors circadian rhythm → REM occurs at optimal phase → more REM, more consistent total sleep, and better recovery |
 | Consistent wake time | Total Sleep, Body Battery | Reduces sleep phase drift → more time asleep and better recovery |
 | No alcohol | REM Sleep, Body Battery | Alcohol fragments the second half of the night and suppresses REM by up to 25% |
 

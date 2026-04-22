@@ -28,6 +28,13 @@ function Delta({ val, baselineVal, isMinutes, label = 'baseline' }) {
   )
 }
 
+const METRIC_LABELS = {
+  totalSleep: 'Total Sleep',
+  deepSleep: 'Deep Sleep',
+  remSleep: 'REM Sleep',
+  bodyBattery: 'Body Battery',
+}
+
 export default function Home({ navigate }) {
   const [nights, setNights] = useState(null)
   const [error, setError] = useState(null)
@@ -171,7 +178,20 @@ export default function Home({ navigate }) {
               ))}
             </div>
             {tacticInfo && expanded && (
-              <p className="card-blurb">{tacticInfo.blurb}</p>
+              <div className="card-blurb-block">
+                <p className="card-blurb">{tacticInfo.blurb}</p>
+                {tacticInfo.targetMetrics?.length > 0 && (
+                  <div className="expect-metrics">
+                    <span className="expect-metrics-label">Targets</span>
+                    {tacticInfo.targetMetrics.map(k => (
+                      <span key={k} className="expect-metric-chip">{METRIC_LABELS[k]}</span>
+                    ))}
+                  </div>
+                )}
+                {tacticInfo.expectTimeline && (
+                  <p className="card-blurb-timeline">{tacticInfo.expectTimeline}</p>
+                )}
+              </div>
             )}
             {tacticInfo && (
               <button className="blurb-toggle" onClick={toggleExpand} aria-expanded={expanded}>

@@ -7,6 +7,8 @@ export const DEFAULT_TACTICS = [
     doability: 3,
     blurb: 'Sleep onset requires core body temperature to drop 1–2°F. A cool room (65–68°F) accelerates this, deepening sleep.',
     source: 'Walker, thermoregulation research',
+    targetMetrics: ['deepSleep', 'totalSleep'],
+    expectTimeline: 'Deep Sleep often improves in the first week; Total Sleep follows as sleep onset shortens.',
   },
   {
     name: 'Blue blockers',
@@ -14,6 +16,8 @@ export const DEFAULT_TACTICS = [
     doability: 3,
     blurb: 'Blue light delays melatonin release, pushing back your natural sleep window. Blocking it 2–3 hours before bed lets melatonin rise on schedule, so you fall asleep faster and at your intended bedtime.',
     source: 'Huberman Lab, melatonin suppression research',
+    targetMetrics: ['totalSleep', 'bodyBattery'],
+    expectTimeline: 'Total Sleep improves in 1–2 weeks as melatonin timing shifts; Body Battery follows.',
   },
   {
     name: 'Mouth tape',
@@ -21,6 +25,8 @@ export const DEFAULT_TACTICS = [
     doability: 3,
     blurb: 'Mouth breathing causes more snoring and micro-awakenings through the night. Nasal breathing reduces these interruptions, giving you more continuous sleep and more time in deep sleep.',
     source: 'Growing clinical evidence, Huberman Lab',
+    targetMetrics: ['deepSleep', 'bodyBattery'],
+    expectTimeline: 'Deep Sleep tends to move in the first week from fewer micro-awakenings; Body Battery follows.',
   },
   {
     name: 'Caffeine cutoff',
@@ -28,6 +34,8 @@ export const DEFAULT_TACTICS = [
     doability: 2,
     blurb: 'Caffeine blocks adenosine receptors for up to 10 hours, reducing deep sleep even when you fall asleep without trouble.',
     source: 'Walker "Why We Sleep", multiple RCTs',
+    targetMetrics: ['deepSleep', 'remSleep'],
+    expectTimeline: 'Deep Sleep improves in the first week; REM typically continues improving over 2–3 weeks as adenosine sensitivity fully recovers.',
   },
   {
     name: 'Morning sunlight',
@@ -35,13 +43,17 @@ export const DEFAULT_TACTICS = [
     doability: 2,
     blurb: 'Triggers a morning cortisol pulse that anchors your circadian clock, making it easier to fall asleep at a consistent time.',
     source: 'Huberman Lab, circadian biology research',
+    targetMetrics: ['totalSleep', 'bodyBattery'],
+    expectTimeline: 'Body Battery improves first (1–2 weeks) as your nervous system starts recovering more efficiently. Total Sleep improves as you start falling asleep at your intended time more reliably (2–4 weeks).',
   },
   {
     name: '528 Hz playlist',
     impact: 1,
     doability: 3,
-    blurb: 'A calming playlist can ease pre-sleep anxiety and create a consistent wind-down ritual. Any benefit comes from relaxation, not the specific frequency.',
+    blurb: 'Relaxing music at bedtime can ease pre-sleep anxiety and signal wind-down. Any effect comes from relaxation, not 528 Hz specifically — studies find no evidence the frequency matters, and the "healing frequency" claims originate from numerology, not biology.',
     source: 'General relaxation research; 528 Hz frequency claims are not evidence-based',
+    targetMetrics: ['totalSleep', 'bodyBattery'],
+    expectTimeline: 'Some randomized studies show faster sleep onset and better subjective sleep quality from bedtime music. Objective metrics (Deep Sleep, REM) are inconsistent across studies — watch Total Sleep and Body Battery over 2–3 weeks.',
   },
   {
     name: 'Consistent wake time',
@@ -49,6 +61,8 @@ export const DEFAULT_TACTICS = [
     doability: 1,
     blurb: 'Anchors your circadian rhythm. Even one lie-in can delay your sleep phase by 1–2 hours, making it harder to fall asleep the following night.',
     source: 'CBT-I (core intervention), AASM',
+    targetMetrics: ['totalSleep', 'bodyBattery'],
+    expectTimeline: 'Total Sleep improves as you start falling asleep at your intended time more reliably (1–2 weeks); Body Battery improves as the clock locks in (2–4 weeks).',
   },
   {
     name: 'No alcohol',
@@ -56,6 +70,8 @@ export const DEFAULT_TACTICS = [
     doability: 1,
     blurb: 'Alcohol sedates rather than induces sleep — it fragments the second half of the night and suppresses REM by up to 25%.',
     source: 'Walker, polysomnography research',
+    targetMetrics: ['remSleep', 'bodyBattery'],
+    expectTimeline: 'REM recovers within the first week of abstinence; Body Battery follows.',
   },
 ]
 

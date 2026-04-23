@@ -35,10 +35,11 @@ const METRIC_LABELS = {
   bodyBattery: 'Body Battery',
 }
 
-export default function Home({ navigate }) {
+export default function Home({ navigate, isUnlocked, onUnlock }) {
   const [nights, setNights] = useState(null)
   const [error, setError] = useState(null)
   const [expandedTactics, setExpandedTactics] = useState(new Set())
+  const [showDialog, setShowDialog] = useState(false)
 
   useEffect(() => {
     fetchNights()
@@ -52,7 +53,12 @@ export default function Home({ navigate }) {
   if (nights.length === 0) {
     return (
       <div className="screen">
-        <h1 className="app-title">🌙 Sleep Lab</h1>
+        <div className="home-header">
+          <h1 className="app-title">🌙 Sleep Lab</h1>
+          {!isUnlocked && (
+            <button className="unlock-btn" onClick={() => setShowDialog(true)}>🔒 Unlock editing</button>
+          )}
+        </div>
         <div className="empty-state">
           <p>Enter your last 7 nights to establish your baseline.</p>
           <button className="primary-btn" onClick={() => navigate('log')}>Log last night</button>
@@ -77,7 +83,25 @@ export default function Home({ navigate }) {
 
   return (
     <div className="screen">
-      <h1 className="app-title">🌙 Sleep Lab</h1>
+      <div className="home-header">
+        <h1 className="app-title">🌙 Sleep Lab</h1>
+        {!isUnlocked && (
+          <button className="unlock-btn" onClick={() => setShowDialog(true)}>🔒 Unlock editing</button>
+        )}
+      </div>
+
+      {showDialog && (
+        <div className="modal-overlay">
+          <div className="modal-dialog">
+            <p>😬 <strong>This is Chiara's real sleep data.</strong></p>
+            <p>If you enable editing, you could mess it up. You sure?</p>
+            <div className="modal-actions">
+              <button className="modal-cancel-btn" onClick={() => setShowDialog(false)}>Never mind</button>
+              <button className="modal-unlock-btn" onClick={() => { onUnlock(); setShowDialog(false) }}>Unlock editing</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="card card-clickable" onClick={() => navigate('log', { editRecord: lastNight })}>
         <div className="card-header">

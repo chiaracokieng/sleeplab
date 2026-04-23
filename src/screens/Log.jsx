@@ -18,7 +18,7 @@ function loadCustomTactics() {
   }
 }
 
-export default function Log({ navigate, editRecord }) {
+export default function Log({ navigate, editRecord, isUnlocked }) {
   const [form, setForm] = useState(() => {
     if (!editRecord) return {
       date: localToday(),
@@ -137,6 +137,8 @@ export default function Log({ navigate, editRecord }) {
         <h1 className="app-title">{editRecord ? 'Edit Night' : 'Log Last Night'}</h1>
       </div>
 
+      {!isUnlocked && <div className="readonly-banner">Read only</div>}
+
       <div className="form-group">
         <label>Date</label>
         <input
@@ -244,7 +246,7 @@ export default function Log({ navigate, editRecord }) {
 
       {error && <p className="error">{error}</p>}
 
-      <button className="primary-btn" onClick={handleSave} disabled={saving || deleting}>
+      <button className="primary-btn" onClick={handleSave} disabled={saving || deleting || !isUnlocked}>
         {saving ? (editRecord ? 'Updating…' : 'Saving…') : (editRecord ? 'Update' : 'Save')}
       </button>
 
@@ -260,7 +262,7 @@ export default function Log({ navigate, editRecord }) {
             </button>
           </div>
         ) : (
-          <button className="delete-btn" onClick={() => setConfirmDelete(true)}>
+          <button className="delete-btn" onClick={() => setConfirmDelete(true)} disabled={!isUnlocked}>
             Delete night
           </button>
         )

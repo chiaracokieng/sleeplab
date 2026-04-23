@@ -24,6 +24,7 @@ The core question: **How does doing X change my sleep quality?**
 
 - **React 19 + Vite** — single-page app, two screens
 - **Screen navigation**: `useState` in `App.jsx` (planned migration to react-router later). Screens receive a `navigate` function as a prop.
+- **Guest mode**: `isUnlocked` boolean state lives in `App.jsx`, seeded from `localStorage` key `sleeplab_unlocked`. Passed as an explicit prop to both `Home` (plus `onUnlock` callback) and `Log`. Locked state disables Save and Delete; `Home` shows a confirmation dialog before unlocking.
 - **Data storage**: Airtable REST API via `src/airtable.js`
 - **Env vars**: `VITE_AIRTABLE_TOKEN` and `VITE_AIRTABLE_BASE_ID` in `.env` (not committed)
 
@@ -45,6 +46,7 @@ docs/
   spec-0.1-core.md
   spec-0.2-experiments.md
   spec-0.2.1-tactic-card.md
+  spec-0.3-guest-mode.md
   tactics-research.md
 ```
 
@@ -71,3 +73,4 @@ docs/
 - Body Battery Change omitted from the Airtable record if left blank
 - Custom tactics stored in `localStorage` under key `sleeplab_custom_tactics`
 - `navigate` prop pattern chosen to make future react-router migration straightforward
+- `isUnlocked` passed as an explicit prop to `Log` (not via the navigate `props` spread) so the spread cannot accidentally shadow it

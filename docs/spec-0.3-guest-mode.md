@@ -79,7 +79,7 @@ Dialog style: slight warm-yellow/orange background or border to signal "caution"
 - Dialog is a simple modal — no library needed, styled inline with existing CSS variables.
 - Read-only enforcement is UI-only. No server-side protection. Sufficient for the use case: preventing accidental edits by non-technical friends.
 
-> **Note:** The empty-state "Log last night" button (shown only when zero nights exist) is not addressed — guests are expected to see existing data, so this case is not a priority.
+> **Note:** When zero nights exist, the Home screen renders an early-return branch that shows the unlock button but does not include the confirmation dialog. Clicking "Unlock editing" in this state sets `showDialog` but nothing renders. This is a known gap — guests are expected to encounter existing data, so the zero-nights case is not a priority to fix.
 
 > **Note:** The "🔒 Unlock editing" button appears only in the Home screen header. A guest already on the Log/edit screen has no in-place unlock path — they must tap Back to return to Home first. This is intentional; the friction is acceptable given the use case.
 

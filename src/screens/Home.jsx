@@ -47,19 +47,37 @@ export default function Home({ navigate, isUnlocked, onUnlock }) {
       .catch(e => setError(e.message))
   }, [])
 
+  const headerAndDialog = (
+    <>
+      <div className="home-header">
+        <h1 className="app-title">🌙 Sleep Lab</h1>
+        {isUnlocked
+          ? <span className="unlocked-badge">✏️ Editing unlocked</span>
+          : <button className="unlock-btn" onClick={() => setShowDialog(true)}>🔒 Unlock editing</button>
+        }
+      </div>
+      {showDialog && (
+        <div className="modal-overlay">
+          <div className="modal-dialog">
+            <p>😬 <strong>This is Chiara's real sleep data.</strong></p>
+            <p>If you enable editing, you could mess it up. You sure?</p>
+            <div className="modal-actions">
+              <button className="modal-cancel-btn" onClick={() => setShowDialog(false)}>Never mind</button>
+              <button className="modal-unlock-btn" onClick={() => { onUnlock(); setShowDialog(false) }}>Unlock editing</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+
   if (error) return <div className="screen"><p className="error">{error}</p></div>
   if (nights === null) return <div className="screen"><p className="loading">Loading…</p></div>
 
   if (nights.length === 0) {
     return (
       <div className="screen">
-        <div className="home-header">
-          <h1 className="app-title">🌙 Sleep Lab</h1>
-          {isUnlocked
-            ? <span className="unlocked-badge">✏️ Editing unlocked</span>
-            : <button className="unlock-btn" onClick={() => setShowDialog(true)}>🔒 Unlock editing</button>
-          }
-        </div>
+        {headerAndDialog}
         <div className="empty-state">
           <p>Enter your last 7 nights to establish your baseline.</p>
           <button className="primary-btn" onClick={() => navigate('log')}>Log last night</button>
@@ -84,26 +102,7 @@ export default function Home({ navigate, isUnlocked, onUnlock }) {
 
   return (
     <div className="screen">
-      <div className="home-header">
-        <h1 className="app-title">🌙 Sleep Lab</h1>
-          {isUnlocked
-            ? <span className="unlocked-badge">✏️ Editing unlocked</span>
-            : <button className="unlock-btn" onClick={() => setShowDialog(true)}>🔒 Unlock editing</button>
-          }
-      </div>
-
-      {showDialog && (
-        <div className="modal-overlay">
-          <div className="modal-dialog">
-            <p>😬 <strong>This is Chiara's real sleep data.</strong></p>
-            <p>If you enable editing, you could mess it up. You sure?</p>
-            <div className="modal-actions">
-              <button className="modal-cancel-btn" onClick={() => setShowDialog(false)}>Never mind</button>
-              <button className="modal-unlock-btn" onClick={() => { onUnlock(); setShowDialog(false) }}>Unlock editing</button>
-            </div>
-          </div>
-        </div>
-      )}
+      {headerAndDialog}
 
       <div className="card card-clickable" onClick={() => navigate('log', { editRecord: lastNight })}>
         <div className="card-header">

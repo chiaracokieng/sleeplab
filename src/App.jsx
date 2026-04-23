@@ -19,5 +19,5 @@ export default function App() {
   }
 
   if (screen === 'home') return <Home navigate={navigate} isUnlocked={isUnlocked} onUnlock={handleUnlock} />
-  if (screen === 'log') return <Log navigate={navigate} isUnlocked={isUnlocked} {...props} />
+  if (screen === 'log') return <Log navigate={navigate} {...props} isUnlocked={isUnlocked} />
 }

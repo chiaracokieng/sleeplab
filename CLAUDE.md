@@ -73,4 +73,4 @@ docs/
 - Body Battery Change omitted from the Airtable record if left blank
 - Custom tactics stored in `localStorage` under key `sleeplab_custom_tactics`
 - `navigate` prop pattern chosen to make future react-router migration straightforward
-- `isUnlocked` passed as an explicit prop to `Log` (not via the navigate `props` spread) so the spread cannot accidentally shadow it
+- `isUnlocked` passed as an explicit prop to `Log` after the `{...props}` spread so it takes precedence if `props` ever contains `isUnlocked`

@@ -65,7 +65,7 @@ Dialog style: slight warm-yellow/orange background or border to signal "caution"
 
 ## Unlocked state
 
-- **`🔒 Unlock editing`** button disappears from the header.
+- **`🔒 Unlock editing`** button is replaced by a **`✏️ Editing unlocked`** badge in the header.
 - "Read only" banner disappears. Save / Update and Delete buttons work normally.
 - All write interactions work as before.
 - State persists in `localStorage` under key `sleeplab_unlocked`.
@@ -75,15 +75,11 @@ Dialog style: slight warm-yellow/orange background or border to signal "caution"
 ## Implementation notes
 
 - `localStorage` key: `sleeplab_unlocked` — presence of the key (any truthy value) means unlocked.
-- `isUnlocked` state lives in `App.jsx`. `App` passes both `isUnlocked` and an `onUnlock` callback to `Home`; `Home` calls `onUnlock()` when the user confirms the dialog. `isUnlocked` is also passed to `Log` as an explicit prop alongside the `{...props}` spread — not threaded through the navigate mechanism — so the spread cannot shadow it.
+- `isUnlocked` state lives in `App.jsx`. `App` passes both `isUnlocked` and an `onUnlock` callback to `Home`; `Home` calls `onUnlock()` when the user confirms the dialog. `isUnlocked` is also passed to `Log` as an explicit prop placed after the `{...props}` spread so it takes precedence if `props` ever contains `isUnlocked`.
 - Dialog is a simple modal — no library needed, styled inline with existing CSS variables.
 - Read-only enforcement is UI-only. No server-side protection. Sufficient for the use case: preventing accidental edits by non-technical friends.
 
-> **Note:** When zero nights exist, the Home screen renders an early-return branch that shows the unlock button but does not include the confirmation dialog. Clicking "Unlock editing" in this state sets `showDialog` but nothing renders. This is a known gap — guests are expected to encounter existing data, so the zero-nights case is not a priority to fix.
-
 > **Note:** The "🔒 Unlock editing" button appears only in the Home screen header. A guest already on the Log/edit screen has no in-place unlock path — they must tap Back to return to Home first. This is intentional; the friction is acceptable given the use case.
-
-> **Note:** `isUnlocked` is passed to `Log` as a separate explicit prop (`<Log navigate={navigate} isUnlocked={isUnlocked} {...props} />`), not via the navigate call, so the `{...props}` spread from navigate cannot override it.
 
 ---
 

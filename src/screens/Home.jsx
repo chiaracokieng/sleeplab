@@ -55,9 +55,10 @@ export default function Home({ navigate, isUnlocked, onUnlock }) {
       <div className="screen">
         <div className="home-header">
           <h1 className="app-title">🌙 Sleep Lab</h1>
-          {!isUnlocked && (
-            <button className="unlock-btn" onClick={() => setShowDialog(true)}>🔒 Unlock editing</button>
-          )}
+          {isUnlocked
+            ? <span className="unlocked-badge">✏️ Editing unlocked</span>
+            : <button className="unlock-btn" onClick={() => setShowDialog(true)}>🔒 Unlock editing</button>
+          }
         </div>
         <div className="empty-state">
           <p>Enter your last 7 nights to establish your baseline.</p>
@@ -85,9 +86,10 @@ export default function Home({ navigate, isUnlocked, onUnlock }) {
     <div className="screen">
       <div className="home-header">
         <h1 className="app-title">🌙 Sleep Lab</h1>
-        {!isUnlocked && (
-          <button className="unlock-btn" onClick={() => setShowDialog(true)}>🔒 Unlock editing</button>
-        )}
+          {isUnlocked
+            ? <span className="unlocked-badge">✏️ Editing unlocked</span>
+            : <button className="unlock-btn" onClick={() => setShowDialog(true)}>🔒 Unlock editing</button>
+          }
       </div>
 
       {showDialog && (

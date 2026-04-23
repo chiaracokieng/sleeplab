@@ -600,6 +600,12 @@
   white-space: nowrap;
 }
 
+.unlocked-badge {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
 .readonly-banner {
   background: var(--border);
   border-radius: 8px;

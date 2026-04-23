@@ -23,7 +23,7 @@ export const DEFAULT_TACTICS = [
     name: 'Mouth tape',
     impact: 2,
     doability: 3,
-    blurb: 'Mouth breathing causes more snoring and micro-awakenings through the night. Nasal breathing reduces these interruptions, giving you more continuous sleep and more time in deep sleep.',
+    blurb: 'Mouth breathing causes more snoring and micro-awakenings through the night. Nasal breathing reduces these interruptions, giving you more continuous sleep, less lost sleep time (each micro-awakening is minutes off your total), and more time in deep sleep.',
     source: 'Growing clinical evidence, Huberman Lab',
     targetMetrics: ['deepSleep', 'totalSleep', 'bodyBattery'],
     expectTimeline: 'Deep Sleep and Total Sleep improve in the first week — fewer micro-awakenings means less lost sleep time; Body Battery follows.',

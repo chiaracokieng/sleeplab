@@ -17,7 +17,6 @@ describe('filterExcluded', () => {
   })
 })
 
-
 describe('fmtMinutes', () => {
   it('formats whole hours', () => {
     expect(fmtMinutes(480)).toBe('8h 0m')

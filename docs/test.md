@@ -21,9 +21,9 @@ All testable logic extracted here and covered in `src/__tests__/utils.test.js`.
 |---|---|
 | `fmtMinutes` | whole hours, hours+minutes, sub-hour, null, empty string |
 | `fmtBattery` | positive, zero, negative, null, empty string |
-| `calcBaseline` | excludes nights[0], excludes tactic nights, sampleSize cap, rounding, missing fields, independent per-metric averaging, correct count |
 | `filterExcluded` | removes `Excluded: true` nights, keeps nights with no field, empty result |
-| `buildBaselineInput` | passthrough when lastNight not excluded, prepend when excluded, excluded-lastNight baseline correctness |
+| `calcWindowBaseline` | returns null when no tactic-free nights, includes nights[0], excludes tactic nights, sampleSize cap |
+| `calcTacticAvg` | returns null when no tactic nights, correct average, includes nights[0], excludes other tactics, per-metric null handling, sampleSize cap, correct count, `avg.nights` contains exactly the tactic nights within the window |
 
 ## What we don't test
 
@@ -34,5 +34,5 @@ All testable logic extracted here and covered in `src/__tests__/utils.test.js`.
 ## Checklist for new code
 
 - [ ] New pure function? Add it to `src/utils.js` and write tests for it.
-- [ ] New baseline/filtering logic? Add cases to the `calcBaseline` suite.
+- [ ] New baseline/filtering logic? Add cases to the `calcWindowBaseline` suite.
 - [ ] Test the *output value*, not just that the function runs without throwing.

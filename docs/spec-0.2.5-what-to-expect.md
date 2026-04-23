@@ -65,9 +65,11 @@ const METRIC_LABELS = {
     {tacticInfo.targetMetrics?.length > 0 && (
       <div className="expect-metrics">
         <span className="expect-metrics-label">Targets</span>
-        {tacticInfo.targetMetrics.map(k => (
-          <span key={k} className="expect-metric-chip">{METRIC_LABELS[k]}</span>
-        ))}
+        <div className="expect-metrics-chips">
+          {tacticInfo.targetMetrics.map(k => (
+            <span key={k} className="expect-metric-chip">{METRIC_LABELS[k]}</span>
+          ))}
+        </div>
       </div>
     )}
     {tacticInfo.expectTimeline && (
@@ -92,8 +94,13 @@ The timeline paragraph uses `card-blurb-timeline` (not `card-blurb`) to avoid in
 
 .expect-metrics {
   display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.expect-metrics-chips {
+  display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: 0.375rem;
 }
 
